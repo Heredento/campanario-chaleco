@@ -9,12 +9,12 @@
 {% endblock %}
 
 {% block content %}
-<body background="{% static 'img/bgd2.jpg' %}">
+<body background="{% static 'formulario/img/bgd2.jpg' %}">
     <div class="fullsize flexrow flexcenter">
         <div class="midtransparent flexcolumn flexcenter fit">
             <h3 style="margin: 6px;">Estás a unos pasos de verificar tu correo...</h3>
             <p style="margin: 3px;">¡La institución te enviará un codígo de verificación que usarás aquí!</p>
-            <form action="{% url 'verificarusuario'%}" method="post">
+            <form action="" method="post">
                 
                 {% csrf_token %}
                 <input type="text" name="correo" style="width: 400px;" placeholder="Ingresa tu correo o nombre de usuario" required maxlength="320">
@@ -34,7 +34,7 @@
 
             {% if exitoso == False %}
             {% elif exitoso == True %}
-                <br><p style="margin: 3px;">Correo verificado exitosamente <a href="{% url 'login' %}">¿iniciar sesión?</a></p>
+                <br><p style="margin: 3px;">Correo verificado exitosamente <a href="">¿iniciar sesión?</a></p>
             {% endif %}
         </div>
     </div>

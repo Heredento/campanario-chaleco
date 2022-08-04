@@ -9,12 +9,12 @@
 {% endblock %}
 
 {% block content %}
-<body background="{% static 'img/bgd2.jpg' %}">
+<body background="{% static 'formulario/img/bgd2.jpg' %}">
     {% if verificado is False %}
         <div class="fullsize flexrow flexcenter">
             <div class="midtransparent flexcolumn flexcenter fit">
                 <h3 style="margin: 6px;"> ¡Parece que estás perdido!</h3>
-                <a href="{% url 'login' %}" style="margin: 3px;">¿Te gustaría intentar ir al menu para iniciar sesión? ¡Clickeame! :D</a>
+                <a href="" style="margin: 3px;">¿Te gustaría intentar ir al menu para iniciar sesión? ¡Clickeame! :D</a>
             </div>
         </div>
     {% elif verificado is True %}

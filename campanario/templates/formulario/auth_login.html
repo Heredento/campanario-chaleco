@@ -11,18 +11,18 @@
 {% endblock %}
 
 {% block content %}
-<body background="{% static 'img/bgd.png' %}" height="50px">
+<body background="{% static 'formulario/img/bgd.png' %}" height="50px">
     <div class="flexcenter fullspace">
         <div class="customwidth1 normalbg">
-            <form action="{% url 'register' %}" method="post">
+            <form action="" method="post">
                 {% csrf_token %}
-                <input type="image" src="{% static 'img/left-arrow.png' %}" height="10" class="backbutton" id="back">
+                <input type="image" src="{% static 'formulario/img/left-arrow.png' %}" height="10" class="backbutton" id="back">
                 <label for="back">Registro</label>
                 <hr>
             </form>
-            <h4><img src="{% static 'img/campanario.png' %}" width="100" height="100"></h4>
+            <h4><img src="{% static 'formulario/img/campanario.png' %}" width="100" height="100"></h4>
 
-            <form action="{% url 'logiuser' %}" method="post">
+            <form action="" method="post">
                 {% csrf_token %}
                 <hr>
                 <input type="text" name="username" placeholder="Usuario o correo electrónico" required maxlength="320"/>
@@ -32,7 +32,7 @@
                 {% elif registrado is False %}
                     <p>¡Parece que tu correo está registrado pero no verificado!</p>
                     <p>Una vez registrado espera un codigo que será enviado a tu correo.</p>
-                    <p>¿Ya tienes el código? <a href="{% url 'verificar' %}">Verifica tu correo aquí</a></p>
+                    <p>¿Ya tienes el código? <a href="">Verifica tu correo aquí</a></p>
                 {% endif %}
 
                 {% if error is False %}
