@@ -1,0 +1,58 @@
+
+{% load static %}
+
+{% block head %}
+<head>
+    <title>Registros</title>
+    {% comment %} <link rel="stylesheet" href="{% static 'css/navbar-2.css' %}"> {% endcomment %}
+    <link rel="stylesheet" href="{% static 'css/mains.css' %}">
+
+</head>
+{% endblock %}
+
+
+
+{% include 'extends/navbarnew.html' %}
+
+
+
+
+{% block body %}
+    <body background="{% static 'img/suwabgd.gif' %}" >
+
+    <br><br>
+<div class="main-block transparent">    
+    
+
+        <h3 class="whitetext">Registros diarios</h3>
+        <textarea class="noresizable leftalign" id="lineacomandos" cols="70" rows="10"  disabled>
+Hola
+Esta
+Es  
+Una 
+PruebaHola
+Esta
+Es  
+Una 
+Prueba
+        </textarea><hr>
+        {% comment %} <input type="text" placeholder="Ingresar comando" class="fitwidth"> {% endcomment %}
+        {% comment %} <input type="submit" class="sendbutton" placeholder="Enviar"> {% endcomment %}
+    
+    <form action="">
+        <input type="file" id="uploadsongs"accept=".py" enctype="multipart/form-data">
+        <button type="submit">Subir Archivo</button>
+    </form>
+   
+
+</div> 
+
+
+
+
+
+</body>
+
+</body>
+{% endblock %}
+
