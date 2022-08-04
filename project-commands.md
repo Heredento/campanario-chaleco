@@ -14,6 +14,13 @@
 *Leave virtual environment*
     `deactivate`
 
+### Pipreqs
+*Generate requirements.txt for packages*
+    `pipreqs --force`
+    --force to overwrite file
+
+*Install python packages*
+    `pip install -r requirements.txt`
 
 
 ### Posgrest commands
