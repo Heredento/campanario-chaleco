@@ -4,46 +4,53 @@
 {% block head %}
 <head>
     <title>Iniciar Sesión</title>
-    <link rel="stylesheet" href="{% static 'css/logon.css' %}">
-    <link rel="stylesheet" href="{% static 'css/mains.css' %}">
+    <link rel="stylesheet" href="{% static 'formulario/css/logon.css' %}">
+    <link rel="stylesheet" href="{% static 'formulario/css/mains.css' %}">
     {% comment %} <style>@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;400&display=swap');</style> {% endcomment %}
 </head>
 {% endblock %}
 
 {% block content %}
-<body background="{% static 'img/bgd.png' %}" height="50px">
+<body background="{% static 'formulario/img/bgd.png' %}" height="50px">
     <div class="flexcenter fullspace">
         <div class="customwidth1 normalbg">
-            <form action="{% url 'register' %}" method="post">
+            <form action="{% url 'signup' %}" method="post">
                 {% csrf_token %}
-                <input type="image" src="{% static 'img/left-arrow.png' %}" height="10" class="backbutton" id="back">
+                <input type="image" src="{% static 'formulario/img/left-arrow.png' %}" height="5" class="backbutton" id="back">
                 <label for="back">Registro</label>
                 <hr>
             </form>
-            <h4><img src="{% static 'img/campanario.png' %}" width="100" height="100"></h4>
+            <h4><img src="{% static 'formulario/img/campanario.png' %}" width="100" height="100"></h4>
 
-            <form action="{% url 'logiuser' %}" method="post">
+            <form action="{% url 'tosignin' %}" method="post">
                 {% csrf_token %}
                 <hr>
                 <input type="text" name="username" placeholder="Usuario o correo electrónico" required maxlength="320"/>
-                <input type="password" name="passwrd" placeholder="Contraseña" required maxlength="1024"/>
+                <input type="password" name="password" placeholder="Contraseña" required maxlength="1024"/>
                 
-                {% if registrado is True %}
-                {% elif registrado is False %}
+                {% if registrado is False %}
+                {% elif registrado is True %}
                     <p>¡Parece que tu correo está registrado pero no verificado!</p>
                     <p>Una vez registrado espera un codigo que será enviado a tu correo.</p>
-                    <p>¿Ya tienes el código? <a href="{% url 'verificar' %}">Verifica tu correo aquí</a></p>
+                    <p>¿Ya tienes el código? <a href="{% url 'validate' %}">¡Verifica tu correo aquí!</a></p>
                 {% endif %}
 
                 {% if error is False %}
                 {% elif error is True %}
-                    <p>Usuario o contraseña incorrectos</p>
-                <hr>
+                    <p>Usuario o contraseña incorrecta</p>
                 {% endif %}
+                {% if existe is True %}
+                {% elif existe is False %}
+                    <p>El usuario o correo ingresado no existe.</p>
+                {% endif %}
+                
+                <hr>
+
+
+                
                     <button type="submit" href="/">Iniciar Sesión</button>
                 </div>
             </form>
-
         </div>
     </div>
 </body>

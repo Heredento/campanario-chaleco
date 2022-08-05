@@ -2,31 +2,42 @@
 {% block head %}
 <head>
     {% comment %} <link rel="stylesheet" href="{% static 'css/navbar.css' %}"> {% endcomment %}
-    <title>Correo Registrado</title>
-    <link rel="stylesheet" href="{% static 'css/mains.css' %}">
+    <title>Verifica tu usuario</title>
+    <link rel="stylesheet" href="{% static 'formulario/css/mains.css' %}">
 
 </head>
 {% endblock %}
 
 {% block content %}
-<body background="{% static 'img/bgd2.jpg' %}">
-    {% if verificado is False %}
-        <div class="fullsize flexrow flexcenter">
-            <div class="midtransparent flexcolumn flexcenter fit">
-                <h3 style="margin: 6px;"> ¡Parece que estás perdido!</h3>
-                <a href="{% url 'login' %}" style="margin: 3px;">¿Te gustaría intentar ir al menu para iniciar sesión? ¡Clickeame! :D</a>
-            </div>
-        </div>
-    {% elif verificado is True %}
-        <div class="fullsize flexrow flexcenter">
-            <div class="midtransparent flexcolumn flexcenter fit">
-                <h3 style="margin: 6px;"> ¡Correo registrado!</h3>
-                <p style="margin: 3px;">El correo {{ correo }} estará verificado cuando un responsable de la institución lo valide.</p>
-                <p style="margin: 3px;">Por favor ten paciencia, y cuando esté verificado te lo notificaremos.</p>    
-            </div>
-        </div>
-    {% endif %}
+<body background="{% static 'formulario/img/bgd2.jpg' %}">
+    <div class="fullsize flexrow flexcenter">
+        <div class="midtransparent flexcolumn flexcenter fit">
+            <h3 style="margin: 6px;">Estás a unos pasos de verificar tu correo...</h3>
+            <p style="margin: 3px;">¡La institución te enviará un codígo de verificación que usarás aquí!</p>
+            <form action="{% url 'tovalidate' %}" method="post">
+                
+                {% csrf_token %}
+                <input type="email" name="email" style="width: 400px;" placeholder="Ingresa tu correo" required maxlength="254">
+                <input type="text" name="codigo" style="width: 160px;" placeholder="Ingresa tu código" required maxlength="6">  
+                <hr>
+                <input type="submit" value="Verificar correo" class="sendbutton">
+            </form>
+            {% if error == True %}
+                <p>El correo ingresado no existe.</p>
+            {% elif error == False %}
+            {% endif %}
 
+            {% if errorAuth == True %}
+                <p>Código ingresado incorrecto.</p>
+            {% elif errorAuth == False %}
+            {% endif %}
+
+            {% if success == False %}
+            {% elif success == True %}
+                <br><p style="margin: 3px;">Correo verificado exitosamente <a href=" {% url 'signin' %} ">¿iniciar sesión?</a></p>
+            {% endif %}
+        </div>
+    </div>
 </body>
 
 {% endblock %}

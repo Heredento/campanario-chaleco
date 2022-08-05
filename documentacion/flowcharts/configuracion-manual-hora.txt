@@ -1,0 +1,20 @@
+*diagrama de flujo en flowchart.fun*
+
+El control remoto se ha encendido
+  Si: Se configura la hora con el control remoto
+    [finish] ¿Terminó de configurar la hora?
+      Si: Apaga el control remoto
+      No: Continúa configurando la hora 
+        (finish) 
+
+  No: [f1]¿La pagina web está habilitada?
+    Si: Accede a la página web
+      [f2] ¿Terminó de configurar la hora?
+        Si: Aplica los cambios, espera y cierra la página
+        No: Continúa aplicando cambios
+          (f2)
+    No: No se puede cambiar la hora en ese momento
+      repite: (f1) 
+
+
+      

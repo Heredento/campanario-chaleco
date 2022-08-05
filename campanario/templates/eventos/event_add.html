@@ -5,16 +5,16 @@
     <title>Eventos del campanario</title>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css'>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
-    <link rel="stylesheet" href="{% static 'css/mains.css' %}">
-    <link rel="stylesheet" href="{% static 'css/evento.css' %}">
-    <script src="{% static 'js/js-code/ev-select.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'formulario/css/mains.css' %}">
+    <link rel="stylesheet" href="{% static 'formulario/css/evento.css' %}">
+    <script src="{% static 'eventos/js/ev-select.js' %}"></script>
 </head>
 {% endblock %}
 
 {% block content %}
-<body background="{% static 'img/suwabgd.gif' %}" height="50px" >
+<body background="{% static 'formulario/img/suwabgd.gif' %}" height="50px" >
     
-    {% include 'extends/navbarnew.html' %}
+    {% include 'extends/extends_navbar.html' %}
     <br>
     <div class="flexblock justcenter" style="height:80%">
         
@@ -22,7 +22,7 @@
         <div class="bloque flexrow midtransparent">
             <h2 class="centeredtext">Agendar evento</h2>
 
-            <form action="{% url 'eventonuevo' %}" method="post">
+            <form action="" method="post">
                 {% csrf_token %}
                 <input type="text" class="cname" name="nevento" placeholder="Ingresa el nombre del evento" maxlength="49" required>
                 <!-- plantillas de eventos -->
@@ -86,11 +86,12 @@
                             <div class="flex flexcolumn webkitsize normalbg"> 
                                 <div class="flex flexcolumn webkitsize"> 
                                     <p class="customp2 nombreevento" id="nevento" ><b>
-                                        {{eventos.nombre}}
+                                        eventos.nombre {% comment %} {{ eventos.nombre }} {% endcomment %}
                                     </b></p>
                                 </div>
                                 <div class="flex flexcolumn webkitsize"> 
                                     <div class="flex flexrow webkitsize">
+                                        {% comment %}
                                         <div class="flex flexcolumn webkitsize flexcenter "> 
                                             {% if eventos.seleccion == '1' %}
                                                 <p class="customp2">Todos los días</p>
@@ -105,29 +106,32 @@
                                             {% else %}
                                                 <p class="customp2"></p>
                                             {% endif %}   
-    
+                                        {% endcomment %}
                                         </div>
                                         <div class="flex flexcolumn webkitsize flexcenter"> 
-                                            
+                                                {% comment %}                                             
                                                 {% if eventos.soloesteaño == True %}
                                                     <p class="customp2">Todos los años</p>
     
                                                 {% elif eventos.soloesteaño == False %}
                                                     <p class="customp2">Sólo este año</p>
     
-                                                {% endif %}
+                                                {% endif %} {% endcomment %}
                                         </div>
                                     </div>
                                     <div class="flex flexrow webkitsize">
                                         <div class="flex flexcolumn webkitsize flexcenter"> 
-                                            <p class="customp2 hora">⏰{{ eventos.tiempo }}</p>
+                                            <p class="customp2 hora">⏰
+                                                {% comment %} {{ eventos.tiempo }} {% endcomment %}
+                                                eventos.tiempo
+                                            </p>
                                             
     
                                         </div>
                                         <div class="flex flexcolumn webkitsize"> 
                                             <p class="customp2" style="text-align: justify;">
-                                                🎶{{eventos.cancion}}
-                                                ID: {{eventos.id}}
+                                                🎶 {% comment %} {{eventos.cancion}}  {% endcomment %}
+                                                {% comment %} ID: {{eventos.id}} {% endcomment %}
                                             </p>
                                         </div>
                                     </div>
@@ -135,7 +139,7 @@
                             </div>
                                 <hr class="margin">
                                 
-                                <form action="{% url 'delevent' eventos.id %}" method="post" style="margin:0px ;">
+                                <form action="" method="post" style="margin:0px ;">
                                     {% csrf_token %}    
                                     <button type="submit" class=" flex flexcenter clear">
                                         <!-- name="delevent" value="delevent" -->
