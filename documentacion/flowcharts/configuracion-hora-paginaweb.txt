@@ -1,0 +1,28 @@
+*diagrama de flujo en flowchart.fun*
+
+Se ingresa la hora que aparece en el campanario
+  ¿Es mayor a doce?
+    Si: Se convierte a formato de 12 horas
+      [aa0]¿Es la misma hora?
+        No: ¿Está la hora adelantada o retrasada?
+          adelantada: se calcula las horas a restar 
+            (a0)
+          retrasada: se calculan las horas a sumar
+            (a0)
+        Si: [a0] Se guarda la hora 
+          (a1)
+    No: Se mantiene la hora
+      (aa0)
+      
+      [a1]¿Los minutos están adelantados o atrasados o son los mismos?
+        adelantado: Se calcula los minutos a restar 
+          (a2)
+        retrasada: Se calcula los minutos a adelantar
+          (a2)
+        mismos minutos: [a2] Se guarda los minutos
+          Se aplican cambios y se cambia la hora en relacion a minutos restados o sumados
+            Se cuenta el tiempo para cambiar la hora
+              ¿Es más de un minuto?
+                Si: Se cuentan los minutos tardados y se adelantan
+                  (a3)
+                [a3] No: ¡La hora es correcta! 

@@ -1,0 +1,15 @@
+*diagrama de flujo en flowchart.fun*
+
+¿Se ha ido la luz?
+  Si: se cuenta el tiempo desde que se se fue
+    Vuelve la electricidad
+      Se arregla la hora automaticamente desde que la electricidad no estaba
+        [a2]¿Es la hora correcta?
+          Si: No se hacen cambios
+            (a2)
+          No: Se configura manualmente con:
+            Control remoto
+            Página web
+              
+  No: la hora no tiene cambios
+    (a2)

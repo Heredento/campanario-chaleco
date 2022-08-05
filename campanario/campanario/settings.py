@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -91,6 +90,19 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+
+## For later
+# DATABASES = {
+#     'default': {
+#         "HOST": BASE_DIR / 'db',
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'OPTIONS': {
+#             'service': 'campanariodb',
+#             'passfile': '.campanario_pgpass',
+#         },
+#     }
+# }
 
 
 

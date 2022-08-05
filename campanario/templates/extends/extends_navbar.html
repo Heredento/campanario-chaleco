@@ -1,8 +1,8 @@
 {% load static %}
 {% block head %}
 <head>
-    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'formulario/css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'formulario/css/main.css' %}">
 </head>
 {% endblock %}
 
@@ -17,18 +17,27 @@
       <div class="flexcolumn">
         <li class="enabled"><a href="{% url 'eventspage' %}" >EVENTOS</li></a>
         <li><a href="{% url 'configpage' %}" class="nava">REGISTROS</li></a>
-        <li><a href="" class="nava">CREDITOS</li></a>
+        <li><a href="{% url 'credits' %}" class="nava">CREDITOS</li></a>
       </div>
     </div>
     <hr style="opacity: 0.3;">
     <div class="flexrow cmargin">
       <div class="flexcolum">
-        <p id="hora"></p><script src="{% static 'js/js-code/tiempo.js' %}"></script>
+        <p id="hora"></p><script src="{% static 'eventos/js/tiempo.js' %}"></script>
       </div>
       <div class="flexcolum">
-        <p id="fecha"></p><script src="{% static 'js/js-code/fecha.js' %}"></script>
+        <p id="fecha"></p><script src="{% static 'eventos/js/fecha.js' %}"></script>
       </div>
     </div>
+    <hr style="opacity: 0.3;">
+    <div class="flexrow cmargin">
+      <div class="flexcolum">
+        <p>
+          <li><a href="{% url 'logout' %}" class="nava">SALIR</a></li>
+        </p>
+      </div>
+    </div>
+    
   </div>
 </div>
   
