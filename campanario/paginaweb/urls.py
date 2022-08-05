@@ -17,16 +17,9 @@ urlpatterns = [
     
     
     ## Métodos post 
-    path('registrar/', views.createUser, name='createuser'),
-    path('entrar/', views.logUser, name='loguser'),
-    path('logout/', views.logoutUser, name='logout'),
-    
-    
-    # path('login', views.login, name='login'),
+    path('toSignup/', views.createUser, name='tosignup'),
+    path('toSignin/', views.logUser, name='tosignin'),
+    path('toLogout/', views.logoutUser, name='tologout'),
+    path('toValidate/', views.validateUser, name='tovalidate'),
     ]
 
-    # Enlaces de métodos post
-    # path('campanario/signin/', views.register, name='register'),
-    # path('campanario/signup/', views.login, name='login'),
-    # path('campanario/registrated/', views.registered, name='registered'),
-    # path('campanario/validate/', views.verify, name='verify'),

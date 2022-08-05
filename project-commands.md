@@ -31,3 +31,4 @@
 *Check all tables django*
     `\dt;`
 
+

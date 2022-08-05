@@ -25,30 +25,27 @@
                 <hr>
             </form>
             <h4><img src="{% static 'formulario/img/campanario.png' %}" width="100" height="100"></h4>
-            <form action="{% url 'createuser' %}" method="post">
+            <form action="{% url 'tosignup' %}" method="post">
                 {% csrf_token %}
                 <hr>
                 <input type="text" name="username" placeholder="Usuario" required maxlength="30"/>
                 <input type="email" name="email" placeholder="Correo electrónico" required maxlength="320"/>
                 <input type="password" name="password1" placeholder="Contraseña" required maxlength="1024"/>
                 <input type="password" name="password2" placeholder="Repite la contraseña" required maxlength="1024"/>
+                <hr>
                 {% if registered is True %}
-                    <p>¿Usuario o contraseña ya registrado, intentalo otra vez!</p>
-                    <hr>
+                    <p>¡El usuario o contraseña ya esta registrado!</p>
                 {% elif registered is False %}
-                
                 {% endif %}
+
                 
                 {% if error is True %}
-                    <p>Tu contraseña no cumple alguno de los lineamientos</p>
-                    
-                    <p>• Tu contraseña debe contener almenos ocho caracteres</p>
-                    <p>• Tu contraseña no puede ser completamente numérica</p>
-
+                    <p>Tu contraseña no cumple alguno de los requisitos:</p>
+                    <p>• Tu contraseña debe contener al menos ocho caracteres.</p>
+                    <p>• Tu contraseña no puede ser completamente numérica.</p>
                 {% elif error is False %}
-                
                 {% endif %}
-                <hr>
+
                 <form action="" method="post">
                     <button type="submit" href="/" >Crear Cuenta</button>
                 </form>

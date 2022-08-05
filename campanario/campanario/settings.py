@@ -11,9 +11,13 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os, sys
+db = os.path.expanduser('~') + '/.campanario'
+sys.path.append(db)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+from db import dbservice
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -44,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'paginaweb',
 ]
 
 MIDDLEWARE = [
@@ -83,29 +88,13 @@ WSGI_APPLICATION = 'campanario.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'campanariodb',
-        'USER': 'campanariosudo',
-        'PASSWORD': '20160176',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'NAME': dbservice.name,
+        'USER': dbservice.user,
+        'PASSWORD': dbservice.password,
+        'HOST': dbservice.host,
+        'PORT': dbservice.port,
     }
 }
-
-
-## For later
-# DATABASES = {
-#     'default': {
-#         "HOST": BASE_DIR / 'db',
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'OPTIONS': {
-#             'service': 'campanariodb',
-#             'passfile': '.campanario_pgpass',
-#         },
-#     }
-# }
-
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

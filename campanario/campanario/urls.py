@@ -20,5 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('campanario/', include('formulario.urls')),
     # path('campanario/', include('eventos.urls')),
-    path('', include('formulario.urls')),
+    path('', include('paginaweb.urls')),
 ]
