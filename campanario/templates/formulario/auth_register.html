@@ -33,6 +33,10 @@
                 <input type="password" name="password1" placeholder="Contraseña" required maxlength="1024"/>
                 <input type="password" name="password2" placeholder="Repite la contraseña" required maxlength="1024"/>
                 <hr>
+                {% if passwordError is True %}
+                    <p>Las contraseñas no coinciden</p>
+                {% elif passwordError is False %}
+                {% endif %}
                 {% if registered is True %}
                     <p>¡El usuario o contraseña ya esta registrado!</p>
                 {% elif registered is False %}

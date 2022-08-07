@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
 
+
  
 class auth_code(models.Model):
     username = models.CharField (max_length=150)
@@ -13,9 +14,17 @@ class auth_code(models.Model):
     
 class events_list(models.Model):
     name = models.CharField (max_length=50)
-    selection = models.CharField (max_length=2)
+    selection = models.IntegerField()
     time = models.CharField (max_length=20)
     week = models.CharField (max_length=20, blank=True)
-    song = models.CharField (max_length=4)  # Hasta 9999 canciones agregables por cuatro digitos
+    song = models.IntegerField()  # Hasta 9999 canciones agregables por cuatro digitos
     currentyear = models.BooleanField(default=False)
+    date = models.CharField(blank=True, max_length=20)
+
+class events_files(models.Model):
+    filename = models.CharField (max_length=11)
+    title = models.CharField (max_length=255)
+
+
+
     

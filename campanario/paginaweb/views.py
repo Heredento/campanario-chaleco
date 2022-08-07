@@ -1,27 +1,27 @@
-from django.db.models import F
+import os, sys, secrets, string, socket, smtplib, ssl, bcrypt
+from django.forms import models
 from django.template import loader
-import bcrypt #https://www.geeksforgeeks.org/hashing-passwords-in-python-with-bcrypt/
 from django.contrib.auth.forms import UserCreationForm
-from django.urls.resolvers import re
 from .forms import CreateUserForm
+from .apps import handleFile, saveFile, sendAuthEmail, generateCode, listEvents
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from django.contrib.auth.decorators import login_required
-from . import models
-import os, sys, secrets, string
+from django.contrib.auth.decorators import login_required  
+from email.message import EmailMessage
+from django.core.files.storage import default_storage
+from django.conf import settings
+#https://www.geeksforgeeks.org/hashing-passwords-in-python-with-bcrypt/
+
+
+cwd=f"{os.getcwd()}"
 connection = os.path.expanduser('~') + '/.campanario'
 sys.path.append(connection)
+sys.path.append(cwd)
 from connection import cur
-
-## Funciones internas de utilidad
-
-def generateCode():
-    alphabet = string.ascii_letters + string.digits
-    password = ''.join(secrets.choice(alphabet) for i in range(6))  # for a 20-character password
-    return password
-
+from emailcon import emailservice
+from . import models, apps
 
 ## Paginas web inicial
 def signin(request):
@@ -37,7 +37,8 @@ def signup(request):
     template = loader.get_template('formulario/auth_register.html')
     contenido={
         'registered': False,
-        'error': False
+        'error': False,
+        'passwordError':False,
     }
     return HttpResponse(template.render(contenido, request))
 
@@ -65,68 +66,91 @@ def credits(request):
 
 @login_required(login_url='/')
 def eventspage(request):
-    template = loader.get_template('eventos/event_add.html')
-    contenido={
-        'error': False,
-        'registrado':True,
+    events = models.events_list.objects.all()
+    filesong = models.events_files.objects.all()
+    if not filesong:
+        contenido={
+        'noSongs': True,
+        'events': events,
+        'songs': filesong,
     }
+    else:
+        contenido={
+        'noSongs': False,
+        'events': events,
+        'songs': filesong,
+    }
+    template = loader.get_template('eventos/event_add.html')
+    
     return HttpResponse(template.render(contenido, request))
 
 @login_required(login_url='/')
 def configpage(request):
+
     template = loader.get_template('eventos/event_config.html')
     contenido={
-        'error': False
+        'timeDisable':False,
+        'fileIsValid': True,
+        'successfulUpload': False,
+        'songname': '',
     }
     return HttpResponse(template.render(contenido, request))
-
 
 ### Métodos post
 def createUser(request):
     form = UserCreationForm()
-    
     if (request.method=='POST'):
         username = ''.join(request.POST['username'])
         email = ''.join(request.POST['email'])
-        print(email)
-        form = CreateUserForm(request.POST)
-        if form.is_valid():
-            print("Válido")
-            auth_create=models.auth_code(
-                username=username,
-                email=email,
-                code=generateCode(),
-                toverify=True
-            )
-            auth_create.save()
-            form.save()
-            
-            template = loader.get_template('formulario/auth_registrated.html')
-            context = {
-                'error': True, 
-                'registered': False,
+        pass1 = ''.join(request.POST['password1'])
+        pass2 = ''.join(request.POST['password2'])
+        if pass1 != pass2:
+            template = loader.get_template('formulario/auth_register.html')
+            contenido={
+            'registered': False,
+            'error': False,
+            'passwordError':True,
             }
-            
-            return HttpResponse(template.render(context, request))
+            return HttpResponse(template.render(contenido, request))
         else:
-            queryvalidate = f"select * from paginaweb_auth_code where username='{username}' or email='{username}';"
-            cur.execute(queryvalidate)
-            res = len(cur.fetchall())
-            if res > 0:
-                template = loader.get_template('formulario/auth_register.html')
-                contenido={
-                'registered': True,
-                'error': False,
+            form = CreateUserForm(request.POST)
+            if form.is_valid():
+                auth_create=models.auth_code(
+                    username=username,
+                    email=email,
+                    code=generateCode(),
+                    toverify=True
+                )
+                auth_create.save()
+                form.save()
+                #toSend, toValidateEmail, toValidateUsername
+                sendAuthEmail(emailservice.receiver, email, username)
+                template = loader.get_template('formulario/auth_registrated.html')
+                context = {
+                    'verificado': True, 
+                    'correo': email,
                 }
-                return HttpResponse(template.render(contenido, request))
-            
+                
+                return HttpResponse(template.render(context, request))
             else:
-                template = loader.get_template('formulario/auth_register.html')
-                contenido={
-                'registered': False,
-                'error': True,
-                }
-                return HttpResponse(template.render(contenido, request))
+                queryvalidate = f"select * from paginaweb_auth_code where username='{username}' or email='{username}';"
+                cur.execute(queryvalidate)
+                res = len(cur.fetchall())
+                if res > 0:
+                    template = loader.get_template('formulario/auth_register.html')
+                    contenido={
+                    'registered': True,
+                    'error': False,
+                    }
+                    return HttpResponse(template.render(contenido, request))
+                
+                else:
+                    template = loader.get_template('formulario/auth_register.html')
+                    contenido={
+                    'registered': False,
+                    'error': True,
+                    }
+                    return HttpResponse(template.render(contenido, request))
 
 def logUser(request):
     if (request.method == 'POST'):
@@ -148,20 +172,19 @@ def logUser(request):
                     'registrado':True,
                     'error': False,
                 }
-                return HttpResponse(template.render(contenido, request))
+                # return render('formulario/auth_login.html', request, contenido)
+                return HttpResponseRedirect(template.render(contenido, request))
                 
 
             
             ## Ya puede accesar
             elif res== False:
                 user = authenticate(request, username=username, password=password)
-                print(username, password)
                 if user is not None:
                     login(request, user)
                     # return redirect('eventos/event_add.html')
-                    template = loader.get_template('eventos/event_add.html')
-                    contenido={}
-                    return HttpResponse(template.render(contenido, request))
+                    return redirect("/events/")
+
 
                 else:
                     template = loader.get_template('formulario/auth_login.html')
@@ -172,7 +195,6 @@ def logUser(request):
                     }
                     return HttpResponse(template.render(contenido, request))
         else:
-            print("no existe")
         
             template = loader.get_template('formulario/auth_login.html')
             context = {
@@ -182,7 +204,6 @@ def logUser(request):
             }
             return HttpResponse(template.render(context, request))
             
-
 def validateUser(request):
     
     if (request.method=='POST'):
@@ -229,10 +250,101 @@ def validateUser(request):
             }
             return HttpResponse(template.render(contenido, request))
 
-
 def logoutUser(request):
     logout(request)
     return redirect('/')
 
+def createEvent(request):
+    if request.method=='POST':
+        name= request.POST['name']
+        selection = request.POST['selection']
+        time = request.POST['time']
+        week = request.POST.get('week', False) 
+        song = request.POST['song']
+        
+        currentyear = True if request.POST.get('currentyear', False) else False
+        
+        events = listEvents(name, selection, time, week, song, currentyear)
+        try:
+            event=models.events_list(
+                name = events[0],
+                selection = events[1],
+                time = events[2],
+                week = events[3],
+                song = events[4],
+                currentyear = events[5],
+                date = events[6],
+            )
+            event.save()
+            
+        except Exception as ex:
+            print(ex)   
+        return redirect("/events/")
+    
+def deleteEvent(request):
+    id = list(request.POST.keys())[1]
+    event=models.events_list.objects.get(pk=id)
+    event.delete()
+    return redirect("/events/")
+        
+
+def changeHour(request):
+    template = loader.get_template('eventos/event_config.html')
+    contenido={
+        'timeDisable': False,
+        'fileIsValid': False,
+        'successfulUpload': True,
+        'songname': '',
+        'timeDisable':True,
+    }
+    return redirect("/config/")
+
+def uploadFile(request):
+    if request.method=='POST':
+        try:
+            file=request.FILES['file'].readlines()
+            
+            if handleFile(file)==True:
+                
+                template = loader.get_template('eventos/event_config.html')
+                contenido={
+                    'timeDisable':False,
+                    'fileIsValid': False,
+                    'successfulUpload': False,
+                    'songname': '',
+                }
+                return HttpResponse(template.render(contenido, request))
+                
+                
+                
+            else:
+                savedfile=saveFile(file)
+                song=models.events_files(
+                    filename=savedfile[0],
+                    title=savedfile[1],
+                )
+                song.save()
+                
+                template = loader.get_template('eventos/event_config.html')
+                contenido={
+                    'timeDisable':False,
+                    'fileIsValid': True,
+                    'successfulUpload': True,
+                    'songname': savedfile[1],
+                }
+                return HttpResponse(template.render(contenido, request))
+                
+
+        except Exception as ex:
+            print (ex)
+            
+    template = loader.get_template('eventos/event_config.html')
+    contenido={
+        'timeDisable':False,
+    }
+    return HttpResponse(template.render(contenido, request))
+            
+    
+        
 
 

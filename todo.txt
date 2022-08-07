@@ -1,0 +1,14 @@
+- check for running scripts in background: avoid time sending email after creating an account 
+
+2022-06-27 00:00:00
+>>> nextday = r + datetime.timedelta(days=1)
+>>> print(nextday)
+2022-06-28 00:00:00
+>>>
+
+
+    # a 5 00:36 2022-W34 1 True
+    # a 4 2022-08-31T00:38 False 1 True
+    # a 3 00:40 False 2 True
+    # a 2 00:40 False 1 True
+    # a 1 00:40 False 1 True
