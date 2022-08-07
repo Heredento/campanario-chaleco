@@ -130,7 +130,8 @@ input[type=submit]:hover  {
 
 input[type=text],
 input[type=email],
-input[type=password] {
+input[type=password],
+input[type=file] {
     width: -webkit-fill-available;
     margin: 10px;
     padding: 10px;
@@ -139,7 +140,6 @@ input[type=password] {
     box-shadow: 1px 2px 5px rgba(0, 0, 0, .09);
     background: #fff;
 }
-
 
 .customwidth1{
     width: 40%;
@@ -153,3 +153,4 @@ input[type=password] {
     width: 100%;
     height: 100%;
 }
+

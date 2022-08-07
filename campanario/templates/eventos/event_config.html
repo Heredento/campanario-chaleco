@@ -18,34 +18,59 @@
 
 
 {% block body %}
-    <body background="{% static 'formulario/img/suwabgd.gif' %}" >
-
-    <br><br>
-<div class="main-block transparent">    
+<body background="{% static 'formulario/img/suwabgd.gif' %}" >
+<br><br>
+    <div class="main-block midtransparent">    
     
-
-        <h3 class="whitetext">Registros diarios</h3>
-        <textarea class="noresizable leftalign" id="lineacomandos" cols="70" rows="10"  disabled>
+        {% comment %}<textarea class="noresizable leftalign" id="lineacomandos" cols="70" rows="10"  disabled>
 Hola
 Esta
 Es  
-Una 
-PruebaHola
-Esta
-Es  
-Una 
-Prueba
-        </textarea><hr>
+        </textarea><hr> {% endcomment %}
         {% comment %} <input type="text" placeholder="Ingresar comando" class="fitwidth"> {% endcomment %}
         {% comment %} <input type="submit" class="sendbutton" placeholder="Enviar"> {% endcomment %}
-    
-    <form action="">
-        <input type="file" id="uploadsongs"accept=".py" enctype="multipart/form-data">
-        <button type="submit">Subir Archivo</button>
-    </form>
-   
+        <h3 >Cambiar hora del campanario</h3>
+        <p>Ingresa la hora que aparece en el campanario</p>
+        <p>Nota: No importa si lo ingresas con formato de 24 o 12 horas</p>
+        <form action="" method="get">
+            <input type="time" name="horareal" id="">
+            
+            {% if timeDisable is True %}
+                <button type="submit" disabled>Cambiar la hora</button>
+            {% elif timeDisable is False %}
+                <button type="submit" >Cambiar la hora</button>
+            {% endif %}
+            {{timeDisable}}
+        </form>
 
-</div> 
+        <hr>
+
+        <h3 >Agregar canciones</h3>
+        <p style="font-size: smaller;">Asegurate de saber lo que haces.</p>
+        <p style="font-size: smaller;">El siguiente enlace tiene instrucciones para agregar una cancion.</p>
+        <a style="font-size: smaller;" href="https://github.com/Heredento/campanario-chaleco/tree/main/documentacion">Documentación de github</a>
+        <a href="" style="font-size: smaller;">Documentación interna</a>
+        <hr>
+        <form action="{% url 'uploadFile' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %} 
+            <input type="file" enctype="multipart/form-data" name="file" title="sheesh" placeholder="Hola"  id="songfile" accept=".py" > 
+            <button type="submit">Subir Archivo</button>
+        </form>
+
+        {% if fileIsValid is True %}
+        {% elif fileIsValid is False %}
+            <p>Ha sucedido un problema</p>
+            <p>El documento que ingresaste no cumple alguno de los requisitos.</p>
+        {% endif %}
+        {% if successfulUpload is True %}
+            <p>Canción {{songname}} agregada exitosamente</p>
+        {% elif successfulUpload is False %}
+
+        {% endif%}
+
+
+
+    </div> 
 
 
 

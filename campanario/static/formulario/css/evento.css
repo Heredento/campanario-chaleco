@@ -103,6 +103,12 @@ button[type=submit].addevent:hover {
     background: rgb(112, 67, 0);
 
 }
+button[type=submit]:disabled.addevent{
+    background: rgb(65, 65, 65);
+}
+button[type=submit]:disabled.addevent:hover{
+    background: rgb(65, 65, 65);
+}
 
 select{
     width:-webkit-fill-available;

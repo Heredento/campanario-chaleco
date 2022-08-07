@@ -7,7 +7,8 @@
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel="stylesheet" href="{% static 'formulario/css/mains.css' %}">
     <link rel="stylesheet" href="{% static 'formulario/css/evento.css' %}">
-    <script src="{% static 'eventos/js/ev-select.js' %}"></script>
+    <script src="{% static 'eventos/js/eventselect.js' %}"></script>
+    <script src="{% static 'eventos/js/js.query.min.js' %}"></script>
 </head>
 {% endblock %}
 
@@ -21,15 +22,14 @@
 
         <div class="bloque flexrow midtransparent">
             <h2 class="centeredtext">Agendar evento</h2>
-
-            <form action="" method="post">
+            <form action="{% url 'createEvent' %}" method="post">
                 {% csrf_token %}
-                <input type="text" class="cname" name="nevento" placeholder="Ingresa el nombre del evento" maxlength="49" required>
+                <input type="text" class="cname" name="name" placeholder="Ingresa el nombre del evento" maxlength="49" required>
                 <!-- plantillas de eventos -->
                 <br><br>
                 <p class="customp">Elige la situación</p>
-                <script src="{% static 'js/dependencias/jsquery.min.js' %}"></script>
-                <select name="eleccionevento" id="evento" oninput ="seventos()" required>
+                <script src="{% static 'eventos/js/jsquery.min.js' %}"></script>
+                <select name="selection" id="evento" oninput ="seventos()" required>
                     <option value="" selected disabled>- Elige una opción -</option>
                     <option value="" class="prioridad1" disabled>-Prioridad I-</option>
                     <option value="4">Dia específico</option>
@@ -42,30 +42,36 @@
                     <option value="1">Todos los días</option>
                 </select>
                 <br>
-                <input type="checkbox" name="ignoreyear" id="ignoreyear" class="marginc"> 
-                <label for="ignoreyear">Todos los años</label>
-                <p class="marginc" for="ignoreyear">Nota: los años son obviados.</p>
+                <input type="checkbox" name="currentyear" id="currentyear" class="marginc"> 
+                <label for="currentyear">Todos los años</label>
+                <p class="marginc" for="currentyear">Nota: los años son obviados.</p>
                 <p id="eventosid" class="customp"></p>
                 <br>
                 <p class="customp">Elige la melodía.</p>
-                <select name="selecsongs" id="canciones" required >
-                    {% comment %} {% for song in songs %}
-                        <option value="{% enumerate[song] %}">{% song %}</option>
-                    {% endfor %}  {% endcomment %}
-                    <option value="1">Campanario clásico</option>
-                    <option value="2">Aparitions stalk in the night</option>
-                    <option value="3">Doom</option>
+
+                <select name="song" id="canciones" required>
+                    {% if noSongs is True %}
+                        <option value="" disabled></option>
+                    {% elif noSongs is False %}
+                        {% for song in songs %}
+                            <option value="{{song.id}}">{{song.title}}</option>
+                        {% endfor %}
+                    {% endif %}
+                    
+  
                 </select> 
 
-                {% comment %} <select name="prueba" >
-                    {% for item in lista %}
-                        <option value="{{ item }}">{{ lista }}</option>
-                    {% endfor %} {% endcomment %}
                     
-                </select>
+                {% comment %} </select> {% endcomment %}
+                
                 <hr>
                 <div class="centeredtext">
-                    <button type="submit" href="/" class="addevent">Agregar Evento</button>
+                    {{ noSongs }}
+                    {% if noSongs is False %}
+                        <button type="submit" href="/" class="addevent">Agregar Evento</button>
+                    {% elif noSongs is True %}
+                        <button type="submit" href="/" class="addevent" disabled>Agregar Evento</button>
+                    {% endif %}
                 </div>
                 
             </form>
@@ -76,61 +82,55 @@
             <div style="margin-left: 30px; margin-right: 30px;">
                 <h4>Lista de eventos</h4>
             <div class="listaeventos">
-                
-                {% comment %} <p>{{eventos.id}}; {{eventos.nevent}}; {{eventos.eventchoice}}; 
-                    {{eventos.time}}; {{eventos.songchoice}}; {{eventos.ignoreyear}}; {{eventos.week}};</p> {% endcomment %}
-
                     {% for eventos in events %}
                         <div class="flex flexrow webkitsize ">
                             <!-- contenido -->
                             <div class="flex flexcolumn webkitsize normalbg"> 
                                 <div class="flex flexcolumn webkitsize"> 
-                                    <p class="customp2 nombreevento" id="nevento" ><b>
-                                        eventos.nombre {% comment %} {{ eventos.nombre }} {% endcomment %}
+                                    <p class="customp2 nombreevento" id="nevento"><b>
+                                         {{ eventos.name }} 
                                     </b></p>
                                 </div>
                                 <div class="flex flexcolumn webkitsize"> 
                                     <div class="flex flexrow webkitsize">
-                                        {% comment %}
                                         <div class="flex flexcolumn webkitsize flexcenter "> 
-                                            {% if eventos.seleccion == '1' %}
+                                            {% if eventos.selection == 1 %}
                                                 <p class="customp2">Todos los días</p>
-                                            {% elif eventos.seleccion == '2' %}
+                                            {% elif eventos.selection == 2 %}
                                                 <p class="customp2">Lunes a Viernes</p>
-                                            {% elif eventos.seleccion == '3' %}
+                                            {% elif eventos.selection == 3 %}
                                                 <p class="customp2">Sábados a Domingos</p>
-                                            {% elif eventos.seleccion == '4' %}
+                                            {% elif eventos.selection == 4 %}
                                                 <p class="customp2">Día específico</p>
-                                            {% elif eventos.seleccion == '5' %}
+                                            {% elif eventos.selection == 5 %}
                                                 <p class="customp2">Semana específica</p>
                                             {% else %}
                                                 <p class="customp2"></p>
                                             {% endif %}   
-                                        {% endcomment %}
+                                        
                                         </div>
                                         <div class="flex flexcolumn webkitsize flexcenter"> 
-                                                {% comment %}                                             
-                                                {% if eventos.soloesteaño == True %}
+                                                                                           
+                                                {% if eventos.currentyear == True %}
                                                     <p class="customp2">Todos los años</p>
     
-                                                {% elif eventos.soloesteaño == False %}
+                                                {% elif eventos.currentyear == False %}
                                                     <p class="customp2">Sólo este año</p>
     
-                                                {% endif %} {% endcomment %}
+                                                {% endif %} 
                                         </div>
                                     </div>
                                     <div class="flex flexrow webkitsize">
                                         <div class="flex flexcolumn webkitsize flexcenter"> 
                                             <p class="customp2 hora">⏰
-                                                {% comment %} {{ eventos.tiempo }} {% endcomment %}
-                                                eventos.tiempo
+                                                {{ eventos.time }} 
                                             </p>
                                             
     
                                         </div>
                                         <div class="flex flexcolumn webkitsize"> 
                                             <p class="customp2" style="text-align: justify;">
-                                                🎶 {% comment %} {{eventos.cancion}}  {% endcomment %}
+                                                🎶  {{eventos.song}}  
                                                 {% comment %} ID: {{eventos.id}} {% endcomment %}
                                             </p>
                                         </div>
@@ -139,11 +139,11 @@
                             </div>
                                 <hr class="margin">
                                 
-                                <form action="" method="post" style="margin:0px ;">
+                                <form action="{% url 'deleteEvent' %}  " method="post" style="margin:0px ;">
                                     {% csrf_token %}    
-                                    <button type="submit" class=" flex flexcenter clear">
+                                    <button type="submit" class=" flex flexcenter clear" name="{{eventos.id}}">
                                         <!-- name="delevent" value="delevent" -->
-                                        <img src="{% static 'img/trash-white.png' %}" class="trashicon">
+                                        <img src="{% static 'eventos/img/trash-white.png' %}" class="trashicon">
                                     </button>                            
                                 </form>
                                     

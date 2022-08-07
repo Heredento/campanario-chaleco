@@ -3,7 +3,7 @@
 <head>
     {% comment %} <link rel="stylesheet" href="{% static 'css/navbar.css' %}"> {% endcomment %}
     <title>Correo Registrado</title>
-    <link rel="stylesheet" href="{% static 'css/mains.css' %}">
+    <link rel="stylesheet" href="{% static 'formulario/css/mains.css' %}">
 
 </head>
 {% endblock %}
@@ -14,15 +14,17 @@
         <div class="fullsize flexrow flexcenter">
             <div class="midtransparent flexcolumn flexcenter fit">
                 <h3 style="margin: 6px;"> ¡Parece que estás perdido!</h3>
-                <a href="" style="margin: 3px;">¿Te gustaría intentar ir al menu para iniciar sesión? ¡Clickeame! :D</a>
+                <a href=" {% url 'signin' %} " style="margin: 3px;">¿Te gustaría intentar ir al menu para iniciar sesión? ¡Clickeame! :D</a>
             </div>
         </div>
     {% elif verificado is True %}
         <div class="fullsize flexrow flexcenter">
             <div class="midtransparent flexcolumn flexcenter fit">
                 <h3 style="margin: 6px;"> ¡Correo registrado!</h3>
-                <p style="margin: 3px;">El correo {{ correo }} estará verificado cuando un responsable de la institución lo valide.</p>
-                <p style="margin: 3px;">Por favor ten paciencia, y cuando esté verificado te lo notificaremos.</p>    
+                <p style="margin: 3px;">La institución sabrá que tu correo ha sido registrado, una vez ellos validen su veracidad, confirmaran si puedes validarte o no.</p>
+                <p style="margin: 3px;">Al ser confirmado recibiras un correo por {{ correo }} que será tu código de verificación.</p>
+                <p style="margin: 3px;"><a href="{% url 'validate' %}">¡Si ya tienes tu código puedes validar tu correo aquí!</a></p>
+
             </div>
         </div>
     {% endif %}
