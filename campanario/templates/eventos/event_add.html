@@ -3,17 +3,15 @@
 {% block head %}
 <head>
     <title>Eventos del campanario</title>
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css'>
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
-    <link rel="stylesheet" href="{% static 'formulario/css/mains.css' %}">
-    <link rel="stylesheet" href="{% static 'formulario/css/evento.css' %}">
+    <link rel="stylesheet" href="{% static 'utilidad/main.css' %}">
+    <link rel="stylesheet" href="{% static 'eventos/css/event_add.css' %}">
     <script src="{% static 'eventos/js/eventselect.js' %}"></script>
     <script src="{% static 'eventos/js/js.query.min.js' %}"></script>
 </head>
 {% endblock %}
 
 {% block content %}
-<body background="{% static 'formulario/img/suwabgd.gif' %}" height="50px" >
+<body background="{% static 'eventos/img/bg_events.gif' %}" height="50px" >
     
     {% include 'extends/extends_navbar.html' %}
     <br>
@@ -66,7 +64,6 @@
                 
                 <hr>
                 <div class="centeredtext">
-                    {{ noSongs }}
                     {% if noSongs is False %}
                         <button type="submit" href="/" class="addevent">Agregar Evento</button>
                     {% elif noSongs is True %}

@@ -17,7 +17,7 @@ class events_list(models.Model):
     selection = models.IntegerField()
     time = models.CharField (max_length=20)
     week = models.CharField (max_length=20, blank=True)
-    song = models.IntegerField()  # Hasta 9999 canciones agregables por cuatro digitos
+    song = models.IntegerField()
     currentyear = models.BooleanField(default=False)
     date = models.CharField(blank=True, max_length=20)
 
@@ -25,6 +25,8 @@ class events_files(models.Model):
     filename = models.CharField (max_length=11)
     title = models.CharField (max_length=255)
 
+class events_backups(models.Model):
+    filename = models.CharField (max_length=11)
+    title = models.CharField (max_length=255)
+    creationdate=models.CharField (max_length=20, blank=True)
 
-
-    

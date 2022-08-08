@@ -7,10 +7,10 @@ sys.path.append(cwd)
 from connection import cur
 from emailcon import emailservice
 from email.message import EmailMessage
-
 from django.conf import settings
-from django.db.models import F
 savefilepath = os.path.join(settings.MEDIA_ROOT, 'songs/')
+savefilebackuppath = os.path.join(settings.MEDIA_ROOT, 'backups/')
+from datetime import datetime
 
 def capPermutations(s):
     lu_sequence = ((c.lower(), c.upper()) for c in s)
@@ -35,11 +35,11 @@ def handleFile(file):
             for repetitions in range(len(definitivelist)):
                 if definitivelist[repetitions] in line:
                     print(definitivelist[repetitions])
-                    a=+1
+                    a=a+1
                 elif 'title' in line:
                     titleexists=True
                 else:
-                    a=+0
+                    a=a+0
         print(a)
         ## No hay inyecciones
         if a == 0 and titleexists == True:
@@ -58,11 +58,51 @@ def saveFile(file):
         line=line.decode("utf-8").replace("\n", "")
         if 'title' in line:
             title = line.replace("title", "").replace("=", "").replace("\r", "").replace('"', '')
-            continue
         else:
             pass
 
     song=open(f'{savefilepath}{filename}', 'w')
+    for line in file:
+        line=line.decode("utf-8").replace("\n", "")
+        song.write(line)
+    song.close()
+    
+    return filename, title
+
+def deleteFile(filename):
+    os.remove(f'{savefilepath}{filename}')
+
+def recoverFileSong(filename):
+    namenumber=len(os.listdir(savefilepath))
+    recoverednamefile=f'song{namenumber}.py'  
+    recoverfile=f'{savefilepath}{recoverednamefile}'
+
+
+    song=open(f'{savefilebackuppath}{filename}', 'r')
+    lines = song.readlines()
+    
+    newfile=open(recoverfile, 'w')
+    for line in lines:
+        newfile.write(line)
+
+    newfile.close()
+    song.close()
+
+
+    return recoverednamefile
+
+def saveFileBackup(file):
+    namenumber=len(os.listdir(savefilepath))
+    filename=f'song{namenumber}.py'    
+    for line in file:
+        line=line.decode("utf-8").replace("\n", "")
+        if 'title' in line:
+            title = line.replace("title", "").replace("=", "").replace("\r", "").replace('"', '')
+            continue
+        else:
+            pass
+
+    song=open(f'{savefilebackuppath}{filename}', 'w')
     for line in file:
         line=line.decode("utf-8").replace("\n", "")
         song.write(line)
@@ -157,4 +197,8 @@ def listEvents(name, selection, time, week, songid, currentyear):
 
     return nombre, seleccion, hour, week, idsong, currentyear, date
 
+def getNowDate():
+    now = str(datetime.now())
+    return now[:-7]
+ 
 

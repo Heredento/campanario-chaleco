@@ -1,15 +1,14 @@
 {% load static %}
 {% block head %}
 <head>
-    {% comment %} <link rel="stylesheet" href="{% static 'css/navbar.css' %}"> {% endcomment %}
     <title>Correo Registrado</title>
-    <link rel="stylesheet" href="{% static 'formulario/css/mains.css' %}">
+    <link rel="stylesheet" href="{% static 'utilidad/main.css' %}">
 
 </head>
 {% endblock %}
 
 {% block content %}
-<body background="{% static 'formulario/img/bgd2.jpg' %}">
+<body background="{% static 'formulario/img/bg_validate_registered.jpg' %}">
     {% if verificado is False %}
         <div class="fullsize flexrow flexcenter">
             <div class="midtransparent flexcolumn flexcenter fit">

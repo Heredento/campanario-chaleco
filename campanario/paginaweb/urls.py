@@ -13,7 +13,6 @@ urlpatterns = [
     path('validate/', views.validate, name='validate'),
     path('credits/', views.credits, name='credits'),
 
-
     ## Eventos    
     path('events/', views.eventspage, name='eventspage'), 
     path('config/', views.configpage, name='configpage'),
@@ -30,5 +29,9 @@ urlpatterns = [
     path('uploadFile/', views.uploadFile, name='uploadFile'),
     path('createEvent/', views.createEvent, name='createEvent'),
     path('deleteEvent/', views.deleteEvent, name='deleteEvent'),
+    path('deleteSong/', views.deleteSong, name='deleteSong'),
+    path('recoverSong/', views.recoverSong, name='recoverSong'),
+
+    
     ]
 
