@@ -10,8 +10,6 @@ find . -path "*/migrations/*.pyc"  -delete
 >>> print(nextday)
 2022-06-28 00:00:00
 >>>
-
-
     # a 5 00:36 2022-W34 1 True
     # a 4 2022-08-31T00:38 False 1 True
     # a 3 00:40 False 2 True
