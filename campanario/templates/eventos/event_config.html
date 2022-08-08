@@ -4,8 +4,8 @@
 {% block head %}
 <head>
     <title>Registros</title>
-    {% comment %} <link rel="stylesheet" href="{% static 'css/navbar-2.css' %}"> {% endcomment %}
-    <link rel="stylesheet" href="{% static 'formulario/css/mains.css' %}">
+    <link rel="stylesheet" href="{% static 'utilidad/main.css' %}">
+    <link rel="stylesheet" href="{% static 'eventos/css/event_config.css' %}">
 
 </head>
 {% endblock %}
@@ -18,7 +18,7 @@
 
 
 {% block body %}
-<body background="{% static 'formulario/img/suwabgd.gif' %}" >
+<body background="{% static 'eventos/img/bg_events.gif' %}" >
 <br><br>
     <div class="main-block midtransparent">    
     
@@ -33,6 +33,7 @@ Es
         <p>Ingresa la hora que aparece en el campanario</p>
         <p>Nota: No importa si lo ingresas con formato de 24 o 12 horas</p>
         <form action="" method="get">
+            🕐
             <input type="time" name="horareal" id="">
             
             {% if timeDisable is True %}
@@ -50,13 +51,11 @@ Es
         <p style="font-size: smaller;">El siguiente enlace tiene instrucciones para agregar una cancion.</p>
         <a style="font-size: smaller;" href="https://github.com/Heredento/campanario-chaleco/tree/main/documentacion">Documentación de github</a>
         <a href="" style="font-size: smaller;">Documentación interna</a>
-        <hr>
         <form action="{% url 'uploadFile' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %} 
             <input type="file" enctype="multipart/form-data" name="file" title="sheesh" placeholder="Hola"  id="songfile" accept=".py" > 
             <button type="submit">Subir Archivo</button>
         </form>
-
         {% if fileIsValid is True %}
         {% elif fileIsValid is False %}
             <p>Ha sucedido un problema</p>
@@ -68,6 +67,54 @@ Es
 
         {% endif%}
 
+        <hr>
+        <h3>Canciones listadas</h3>
+        <p style="font-size: smaller;">Canciones registradas para ser reproducidas en el campanario</p>
+        <div class="listeventos">
+            <form action="{% url 'deleteSong' %}" method="post">
+                {% csrf_token %}
+                {% for event in events  %}
+                <div class="flex flexrow">
+                    <div class="flex">
+                        <p id="songname">{{ event.title }}</p>
+                    </div>
+                    <div class="flex">
+                        <button type="submit" for="songname" name="{{ event.id }}">
+                            <img src="{% static 'eventos/img/trash-white.png' %}" class="trashicon">
+                        </button>
+                    </div>
+                </div>
+
+                
+                {% endfor %}    
+            </form>
+        </div>
+        <h3>Recuperación de canciones listadas</h3>
+        <p style="font-size: smaller;">Canciones listadas recuperables</p>
+        <div class="listeventos">
+            <form action="{% url 'recoverSong' %}" method="post">
+                {% csrf_token %}
+                {% for backup in backups  %}
+                <div class="flex flexrow">
+                    <div class="flex">
+                        <p id="songname">{{ backup.title }}</p>
+                    </div>
+                    <div class="flex">
+                        <p id="songname">Creado el</p>
+                        <p>{{ backup.creationdate }}</p>
+                    </div>
+                    <div class="flex">
+                        <button type="submit" for="songname" name="{{ backup.id }}">
+                            <img src="{% static 'eventos/img/recover_icon.png' %}" class="trashicon">
+                        </button>
+                    </div>
+                </div>
+
+                
+                {% endfor %}    
+            </form>
+
+        </div>
 
 
     </div> 

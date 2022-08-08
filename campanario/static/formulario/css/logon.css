@@ -121,8 +121,9 @@ button:hover {
 }
 
 .backbutton{
-    height: 30px;
-    width: 30px;
+    height: 15;
+    width: auto;
+    color: rgb(87, 127, 172);
 }
 
 .backbutton:hover{

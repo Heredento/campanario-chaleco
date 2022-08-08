@@ -1,0 +1,15 @@
+div.listeventos {
+    display: flex;
+    flex-direction: column;
+    margin: 0px;
+    width: -webkit-fill-available;
+    height: 30%;
+    overflow-y: scroll;
+    /* -webkit-fill-available */
+}
+
+.trashicon{
+    height: 20px;
+    width: 20px;
+    /* border-color:none; */
+}

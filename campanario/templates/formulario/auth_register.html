@@ -9,29 +9,29 @@
 <head>
     <title>Crear Cuenta</title>
     <link rel="stylesheet" href="{% static 'formulario/css/logon.css' %}">
-    <link rel="stylesheet" href="{% static 'formulario/css/mains.css' %}">
+    <link rel="stylesheet" href="{% static 'utilidad/main.css' %}">
 </head>
 {% endblock %}
 
 
 {% block content %}
-<body background="{% static 'formulario/img/bgd.png' %}" height="50px">
+<body background="{% static 'formulario/img/bg_login.png' %}" height="50px">
     <div class="flexcenter fullspace">
         <div class="customwidth1 normalbg">
             <form action="{% url 'signin' %}" method="post">
                 {% csrf_token %}
-                <input type="image" src="{% static 'formulario/img/left-arrow.png' %}" height="5" class="backbutton" id="back">
-                <label for="back">Iniciar sesión</label>    
+                <input type="image" src="{% static 'formulario/img/right_arrow.png' %}" class="backbutton" id="back">
+                <label for="back" class="backbutton">Ir a iniciar sesión</label>    
                 <hr>
             </form>
-            <h4><img src="{% static 'formulario/img/campanario.png' %}" width="100" height="100"></h4>
+            <h4><img src="{% static 'formulario/img/bell_logo.png' %}" width="100" height="100"></h4>
             <form action="{% url 'tosignup' %}" method="post">
                 {% csrf_token %}
                 <hr>
-                <input type="text" name="username" placeholder="Usuario" required maxlength="30"/>
-                <input type="email" name="email" placeholder="Correo electrónico" required maxlength="320"/>
-                <input type="password" name="password1" placeholder="Contraseña" required maxlength="1024"/>
-                <input type="password" name="password2" placeholder="Repite la contraseña" required maxlength="1024"/>
+                <input type="text" name="username" placeholder="Ingresa un nombre de usuario" required maxlength="30"/>
+                <input type="email" name="email" placeholder="Ingresa tu correo electrónico" required maxlength="320"/>
+                <input type="password" name="password1" placeholder="Escribe tu contraseña" required maxlength="1024"/>
+                <input type="password" name="password2" placeholder="Repite tu contraseña" required maxlength="1024"/>
                 <hr>
                 {% if passwordError is True %}
                     <p>Las contraseñas no coinciden</p>

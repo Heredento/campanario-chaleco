@@ -104,6 +104,4 @@ try:
     
 except Exception as ex:
     print(ex)</code></pre>
-
 *El contenido cerrado entre comillas `''` será el contenido que le corresponda a la base de datos que desee conectar.*
-
