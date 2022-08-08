@@ -1,7 +1,7 @@
 import os, sys, secrets, string, socket, smtplib, ssl, datetime
 import itertools as it
 cwd=f"{os.getcwd()}"
-connection = os.path.expanduser('~') + '/.campanario'
+connection = os.path.join(os.path.expanduser('~'), '.campanario')
 sys.path.append(connection)
 sys.path.append(cwd)
 from connection import cur
