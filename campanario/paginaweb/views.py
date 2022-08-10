@@ -1,4 +1,4 @@
-import os, sys, secrets, string, socket, smtplib, ssl, bcrypt
+import os, sys, threading, secrets, string, socket, smtplib, ssl, bcrypt
 from django.forms import models
 from django.template import loader
 from django.contrib.auth.forms import UserCreationForm
@@ -13,11 +13,9 @@ from django.contrib.auth.decorators import login_required
 from email.message import EmailMessage
 from django.core.files.storage import default_storage
 from django.conf import settings
-#https://www.geeksforgeeks.org/hashing-passwords-in-python-with-bcrypt/
-
 
 cwd=f"{os.getcwd()}"
-connection = os.path.expanduser('~') + '/.campanario'
+connection = os.path.join(os.path.expanduser('~'), '.campanario')
 sys.path.append(connection)
 sys.path.append(cwd)
 from connection import cur
@@ -129,7 +127,12 @@ def createUser(request):
                 auth_create.save()
                 form.save()
                 #toSend, toValidateEmail, toValidateUsername
-                sendAuthEmail(emailservice.receiver, email, username)
+                sendEmail = threading.Thread(target=sendAuthEmail, name="AuthenticationEmail", args=(emailservice.receiver, email, username))
+                try:
+                    sendEmail.start()
+                except RuntimeError:
+                    pass
+                # sendAuthEmail(emailservice.receiver, email, username)
                 template = loader.get_template('formulario/auth_registrated.html')
                 context = {
                     'verificado': True, 
@@ -177,7 +180,6 @@ def logUser(request):
                     'registrado':True,
                     'error': False,
                 }
-                # return render('formulario/auth_login.html', request, contenido)
                 return HttpResponseRedirect(template.render(contenido, request))
                 
 
@@ -187,7 +189,6 @@ def logUser(request):
                 user = authenticate(request, username=username, password=password)
                 if user is not None:
                     login(request, user)
-                    # return redirect('eventos/event_add.html')
                     return redirect("/events/")
 
 
@@ -363,20 +364,20 @@ def uploadFile(request):
                     'backups': backup
                 }
                 return HttpResponse(template.render(contenido, request))
-            
-    # template = loader.get_template('eventos/event_config.html')
-    # contenido={
-    #     'timeDisable':False,
-    # }
-    # return HttpResponse(template.render(contenido, request))
 
 def deleteSong(request):
-    id = list(request.POST.keys())[1]
-    filename=models.events_files.objects.get(pk=id)
-    deleteFile(filename.filename)
-    filename.delete()
+    try:
+        
+        id = list(request.POST.keys())[1]
+        filename=models.events_files.objects.get(pk=id)
+        deleteFile(filename.filename)
+        filename.delete()
 
-    return redirect("/config/")
+        return redirect("/config/")
+    
+    except Exception:
+        return redirect("/config/")
+        
 
 def recoverSong(request):
     id = list(request.POST.keys())[1]

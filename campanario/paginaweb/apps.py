@@ -1,7 +1,7 @@
 import os, sys, secrets, string, socket, smtplib, ssl, datetime
 import itertools as it
 cwd=f"{os.getcwd()}"
-connection = os.path.expanduser('~') + '/.campanario'
+connection = os.path.join(os.path.expanduser('~'), '.campanario')
 sys.path.append(connection)
 sys.path.append(cwd)
 from connection import cur
@@ -155,10 +155,9 @@ def sendAuthEmail(toSend, toValidateEmail, toValidateUsername):
             smtp.login(emailservice.email, emailservice.password)
             smtp.sendmail(emailservice.email, emailservice.receiver, em.as_string())
             print("Correo enviado!")
-        
-        
     except Exception as ex:
         print (ex)
+        pass
 
 def listEvents(name, selection, time, week, songid, currentyear):
     nombre=name
