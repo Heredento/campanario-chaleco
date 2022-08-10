@@ -155,10 +155,9 @@ def sendAuthEmail(toSend, toValidateEmail, toValidateUsername):
             smtp.login(emailservice.email, emailservice.password)
             smtp.sendmail(emailservice.email, emailservice.receiver, em.as_string())
             print("Correo enviado!")
-        
-        
     except Exception as ex:
         print (ex)
+        pass
 
 def listEvents(name, selection, time, week, songid, currentyear):
     nombre=name

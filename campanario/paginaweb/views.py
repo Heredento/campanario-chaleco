@@ -1,4 +1,4 @@
-import os, sys, secrets, string, socket, smtplib, ssl, bcrypt
+import os, sys, threading, secrets, string, socket, smtplib, ssl, bcrypt
 from django.forms import models
 from django.template import loader
 from django.contrib.auth.forms import UserCreationForm
@@ -13,7 +13,6 @@ from django.contrib.auth.decorators import login_required
 from email.message import EmailMessage
 from django.core.files.storage import default_storage
 from django.conf import settings
-
 
 cwd=f"{os.getcwd()}"
 connection = os.path.join(os.path.expanduser('~'), '.campanario')
@@ -128,7 +127,12 @@ def createUser(request):
                 auth_create.save()
                 form.save()
                 #toSend, toValidateEmail, toValidateUsername
-                sendAuthEmail(emailservice.receiver, email, username)
+                sendEmail = threading.Thread(target=sendAuthEmail, name="AuthenticationEmail", args=(emailservice.receiver, email, username))
+                try:
+                    sendEmail.start()
+                except RuntimeError:
+                    pass
+                # sendAuthEmail(emailservice.receiver, email, username)
                 template = loader.get_template('formulario/auth_registrated.html')
                 context = {
                     'verificado': True, 
