@@ -1,4 +1,4 @@
-import os, sys, time as t, psycopg2, threading
+import os, sys, time as t, threading
 from datetime import datetime
 connection = os.path.join(os.path.expanduser('~'), '.campanario')
 cwd = os.getcwdb()
