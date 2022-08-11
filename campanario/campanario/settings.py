@@ -19,12 +19,13 @@ sys.path.append(db)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 from db import dbservice
+from secretkey import djangokey
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8&vfiuq4dh7u%nv#b1qp!lia)uu*799fmqlwd+=@h+5=7nj=1@'
+SECRET_KEY = djangokey.key 
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
