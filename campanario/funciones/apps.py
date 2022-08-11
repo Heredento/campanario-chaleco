@@ -1,8 +1,14 @@
 import os, sys, time as t
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
+from django.apps import AppConfig
 connection = os.path.join(os.path.expanduser('~'), '.campanario')
 sys.path.append(connection)
 from connection import cur
+
+class FuncionesConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'funciones'
+
 
 def now():
     # dd/mm/YY H:M:S
@@ -14,7 +20,6 @@ def now():
     minuto= int(now.strftime("%M"))
     segundo = int(now.strftime("%S"))
     return año, mes, dia, hora, minuto, segundo
-
 
 def singleday():
     query=f'select id, date, time, currentyear, song from paginaweb_events_list where selection=4;'
@@ -30,7 +35,6 @@ def singleday():
         thisyear.append(thisyear_)
         songidlist.append(songidlist_)
     return idlist, timelist, datelist, thisyear, songidlist
-
 
 def singleweek():
     query=f'select id, week, time, currentyear, song from paginaweb_events_list where selection=5;'
@@ -64,10 +68,7 @@ def singleweek():
     
     return idlist, timelist, weekdays, thisyear, songidlist
 
-
-
 def singleweekdays():
-
     query = f'select id, time, currentyear, song from paginaweb_events_list where selection=2;'
     cur.execute(query)
     special=cur.fetchall()
@@ -81,8 +82,6 @@ def singleweekdays():
         songidlist.append(songidlist_)
         
     return idlist, timelist, currentyear, songidlist
-
-
 
 def singleweekendays():
     query = f'select id, time, currentyear, song from paginaweb_events_list where selection=3;'
@@ -99,7 +98,6 @@ def singleweekendays():
         
     return idlist, timelist, currentyear, songidlist
 
-
 def alldays():
     query = f'select id, time, currentyear, song from paginaweb_events_list where selection=1;'
     cur.execute(query)
@@ -114,13 +112,6 @@ def alldays():
         songidlist.append(songidlist_)
         
     return idlist, timelist, currentyear, songidlist
-    
-    
-    pass
-    
-    
-
-
 
 def getsong(ids: int):
     query = f'select filename from paginaweb_events_files where id={ids};'
