@@ -1,6 +1,4 @@
 from django.shortcuts import render
-from django.db import models
-from paginaweb import models
 import os, sys, time as t, threading
 from datetime import datetime
 connection = os.path.join(os.path.expanduser('~'), '.campanario')
@@ -8,7 +6,9 @@ cwd = os.getcwdb()
 sys.path.append(connection)
 sys.path.append(cwd)
 from connection import cur
-from getapps import now, singleday, singleweek, singleweekdays, singleweekendays, getsong 
+from apps import now, singleday, singleweek, singleweekdays, singleweekendays, getsong
+from django.conf import settings 
+
 
 ### Sistema de una canción a la vez
 ### Si un evento concide con la hora

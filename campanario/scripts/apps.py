@@ -1,18 +1,10 @@
-import os, sys, time as t, importlib.util
+import os, sys, time as t
 from datetime import datetime, timedelta
 connection = os.path.join(os.path.expanduser('~'), '.campanario')
 sys.path.append(connection)
-
-currentfolder='funcionesd'
-songspath = os.path.join(os.getcwd().replace(currentfolder, ''), 'media/', 'songs/')
-songspathutils = os.path.join(songspath, 'utilities/')
-sys.path.append(songspathutils)
-backuppath = os.path.join(os.getcwd().replace(currentfolder, ''), 'media/', 'backups/')
-sys.path.append(songspath)
-sys.path.append(backuppath)
-from appfunctions import play, C, D, E, F, G, A, B, C_, utilidad, finalizar
-import appfunctions, time as t
 from connection import cur
+from django.conf import settings
+
 
 def now():
     # dd/mm/YY H:M:S
@@ -117,56 +109,47 @@ def alldays():
         
     return idlist, timelist, currentyear, songidlist
 
+
 def playsong(option, song):
+    
     try:
         if option == 1:
-            filepath = os.path.join(songspath, song)
-            filename = song.replace('.py', '')
-            with open(filepath, 'r') as f:
-                contenido = f.read()
-                
-            # print(contenido)
-            # print(filename)
-            player = compile(contenido, filename, 'exec')
-            exec(player)
-            año, mes, dia, hora, minuto, segundo=now()
-            print(f"ID: {song} | [FINISHED] I've finished waiting working at {año}-{mes}-{dia} | {hora}:{minuto}:{segundo}")
-                        
+            filepath = sys.path.append(os.path.join(settings.MEDIA_ROOT, 'songs/', song))
+            # filename = song.replace('.py', '')
+            os.system(f'python3 -m {filepath}')
+            
         elif option == 0:
-            filepath = os.path.join(songspath, 'defaultsong.py')
-            
-            with open(filepath, 'r') as f:
-                contenido = f.read()
-            player = compile(contenido, filename, 'exec')
-            exec(player)
-            año, mes, dia, hora, minuto, segundo=now()
-            print(f"ID: {song} | [FINISHED] I've finished waiting working at {año}-{mes}-{dia} | {hora}:{minuto}:{segundo}")
-            
+            filepath = sys.path.append(os.path.join(settings.MEDIA_ROOT, 'backups/', 'utilities/', 'defaultsong.py'))
+            os.system(f'python3 -m {filepath}')
+            # with open(filenamepath) as f:
+            #     exec(compile(f.read(), filename, "exec"))
+        else:
+            print("Ha habido un error")
     except Exception as ex:
         print(f'[EXCEPCIÓN] {ex}')
-
+        
 
 
 def getsong(ids: int):
     query = f'select filename from paginaweb_events_files where id={ids};'
     cur.execute(query)
     res = cur.fetchall()
-    print(res, len(res))
-    
     if len(res) == 0:
-        print("Es cero")
-        año, mes, dia, hora, minuto, segundo=now()
-        print(f"ID: {ids} | [STARTING] I've started working at {año}-{mes}-{dia} | {hora}:{minuto}:{segundo}")
-        
-        playsong(0, '')
+        print(res)
+        # playsong(0, 'defaultsong')
         
     elif len(res) == 1:
         songfile = "".join(res[0])
-        año, mes, dia, hora, minuto, segundo=now()
-        print(f"ID: {ids} | [STARTING] {songfile} I've started working at {año}-{mes}-{dia} | {hora}:{minuto}:{segundo}")
-        playsong(1, songfile)
+        # playsong(0, songfile)
+        print(songfile)
+    else:
+        print("QUE")
 
 
-    
+
+    año, mes, dia, hora, minuto, segundo=now()
+    print(f"ID: {ids} | [STARTING] I've started working at {año}-{mes}-{dia} | {hora}:{minuto}:{segundo}")
     ## Here goes the code
-    
+    t.sleep(20)
+    año, mes, dia, hora, minuto, segundo=now()
+    print(f"ID: {ids} | [FINISHED] I've finished waiting working at {año}-{mes}-{dia} | {hora}:{minuto}:{segundo}")

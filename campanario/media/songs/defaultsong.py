@@ -79,4 +79,6 @@ def appsong():
     finally:
         finalizar(t.time(), start_time)
 
-    
+if __name__ == '__main__':
+    appsong()
+

@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'paginaweb',
     'funciones',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

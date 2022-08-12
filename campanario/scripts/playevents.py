@@ -1,21 +1,10 @@
 import os, sys, time as t, threading
 from datetime import datetime
 connection = os.path.join(os.path.expanduser('~'), '.campanario')
-
-from getapps import now, singleday, singleweek, singleweekdays, singleweekendays, getsong 
 cwd = os.getcwdb()
 sys.path.append(connection)
-from connection import cur
 sys.path.append(cwd)
-mediapath = os.path.join(os.getcwd().replace('funcionesd', ''), 'media/')
-print(mediapath)
-sys.path.append(mediapath)
-songspath = os.path.join(mediapath, 'songs/')
-sys.path.append(songspath)
-utilities = os.path.join(songspath, 'utilities/')
-sys.path.append(utilities)
-from appfunctions import play, C, D, E, F, G, A, B, C_, utilidad, finalizar
-# import appfunctions, time as t
+from apps import now, singleday, singleweek, singleweekdays, singleweekendays, getsong
 
 
 ### Sistema de una canción a la vez
@@ -28,24 +17,26 @@ evento = threading.Thread(
             target=getsong, name="Song replayer", 
             args=(None,))
 
+
 year, month, day, hour, minute, second = (None for i in range(6))
 
-print("Esto funciona")
-
 try:
+    print("Está activo ekisde")
+
     notinterruption=True
     threadlist=[]
     while notinterruption:
+        
 
     ### Primer orden
         
-        # ahora=    
+        ahora=now()        
         single=singleday()
         idlist, timelist, datelist, thisyear, songidlist = single
 
         
         class Now:
-            año, mes, dia, hora, minuto, segundo = now()    
+            año, mes, dia, hora, minuto, segundo = ahora
         
 
         ## Obtiene la cantidad de threads sucediendo en ese momento
@@ -89,7 +80,7 @@ try:
                 
                 ## Placeholder
                 t.sleep(10)
-                # print("Acaba de terminar algo...")
+                print("Acaba de terminar algo...")
                 
         if evento.name in threadlist:
             if evento.is_alive() is False:
@@ -143,7 +134,7 @@ try:
 
                         ## Placeholder
                         t.sleep(10)
-                        # print("Acaba de terminar algo algo...")
+                        print("Acaba de terminar algo algo...")
 
                 ### Revisa todos los thread y valida si termino de funcionar
                 ### Si es así, lo elimina de la lista, y otro evento puede reproducirse
@@ -190,7 +181,7 @@ try:
 
                     ## Placeholder
                     t.sleep(6)
-                    # print("Acaba de terminar algo algo...")
+                    print("Acaba de terminar algo algo...")
                        
                        
 
@@ -231,7 +222,7 @@ try:
 
                         ## Placeholder
                         t.sleep(6)
-                        # print("Acaba de terminar algo algo...")
+                        print("Acaba de terminar algo algo...")
                         
     
     
@@ -246,6 +237,9 @@ try:
         
         weekdays = singleweekdays()
         idlist, timelist, currentyear, songidlist = weekdays
+
+        today = datetime(Now.año, Now.mes, Now.dia)
+        weekday = today.weekday() 
         
         for num_item, items in enumerate(idlist): ## Iterar todos los items
             
@@ -268,7 +262,7 @@ try:
 
                 ## Placeholder
                 t.sleep(6)
-                # print("Acaba de terminar algo algo...")
+                print("Acaba de terminar algo algo...")
 
 
             
