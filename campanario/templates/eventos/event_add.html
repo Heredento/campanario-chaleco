@@ -19,6 +19,8 @@
         
 
         <div class="bloque flexrow midtransparent">
+            
+            
             <h2 class="centeredtext">Agendar evento</h2>
             <form action="{% url 'createEvent' %}" method="post">
                 {% csrf_token %}
@@ -127,8 +129,21 @@
                                         </div>
                                         <div class="flex flexcolumn webkitsize"> 
                                             <p class="customp2" style="text-align: justify;">
-                                                🎶  {{eventos.song}}  
-                                                {% comment %} ID: {{eventos.id}} {% endcomment %}
+                                            <div id="default + {{eventos.id}}">
+                                                🎶 Canción predeterminada :D
+                                            </div>
+                                                {% for song in songs %}
+
+                                                        {% if eventos.song == song.id %}
+                                                        🎶 {{song.title}}
+                                                        <script>
+                                                            document.getElementById("default + {{eventos.id}}").style.display = "none";
+                                                        </script>
+                                                        {% endif %}
+
+                                                {% endfor %} 
+
+
                                             </p>
                                         </div>
                                     </div>

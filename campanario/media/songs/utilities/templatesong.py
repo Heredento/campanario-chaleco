@@ -1,5 +1,6 @@
-import appfunctions, time as t
-from appfunctions import play, C, D, E, F, G, A, B, C_, utilidad, finalizar
+import time as t
+from utilities.appfunctions import play, C, D, E, F, G, A, B, C_, utilidad, finalizar
+import utilities.appfunctions as appfunctions
 
 ### Ingresar el tempo de la canción, recomendamos entre 40-80
 appfunctions.tempo = 120
@@ -14,7 +15,7 @@ def appsong():
         ### Ingresa las notas a reproducir después de este comentario
 
         ## Las siguientes cuatro líneas son ejemplos
-        play(0, 4)
+        play(1, 3, C, G, A)
         play(1, 4, D)
         play(1, 4, F)
         play(1, 4, G)

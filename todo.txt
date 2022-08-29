@@ -1,5 +1,5 @@
-- check for running scripts in background: avoid time sending email after creating an account 
-
+- make dependencies workable haha
+- https://musescore.com/user/22594/scores/38427
 find . -name '*.pyc' -delete
 find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
 find . -path "*/migrations/*.pyc"  -delete

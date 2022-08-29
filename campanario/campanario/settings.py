@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-import os, sys
+import os, sys, socket
 
 db = os.path.join(os.path.expanduser('~'), '.campanario')
 sys.path.append(db)
@@ -21,7 +21,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 from db import dbservice
 from secretkey import djangokey
 
-# Quick-start development settings - unsuitable for production
+
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+ip = s.connect(("8.8.8.8", 80))
+ip = s.getsockname()[0]
+## Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -38,6 +42,8 @@ ALLOWED_HOSTS = [
     '192.168.0.17',
     '192.168.0.18',
     '192.168.0.19',
+    '192.168.137.91',
+    ip,
 ]
 
 
@@ -123,9 +129,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-mx'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Etc/GMT-6'
 
 USE_I18N = True
 

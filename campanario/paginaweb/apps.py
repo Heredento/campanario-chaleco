@@ -63,7 +63,7 @@ def saveFile(file):
 
     song=open(f'{savefilepath}{filename}', 'w')
     for line in file:
-        line=line.decode("utf-8").replace("\n", "")
+        line=line.decode("utf-8")
         song.write(line)
     song.close()
     
@@ -163,35 +163,20 @@ def listEvents(name, selection, time, week, songid, currentyear):
     nombre=name
     idsong=int(songid)
     seleccion=int(selection)
-    match(seleccion):
-        case 1:
-            hour = time
-            date=''
-
-        case 2:
-            hour = time
-            date=''
-        case 3:
-            hour = time
-            date=''
-
-        case 4:
-            hour=time[11:]
-            date=f"{time[:-12]}-{time[5:-9]}-{time[8:-6]}"
-            
-        case 5:
-            hour=time
-            date=''
-            week=week
+    
+    if 0 <= seleccion <=3: 
+        hour, date = time,''
         
+    elif seleccion == 4:
+        hour=time[11:]
+        date=f"{time[:-12]}-{time[5:-9]}-{time[8:-6]}"
+    
+    elif seleccion == 5:    
+        hour=time
+        date=''
+        week=week
         
-    match(week):
-        case False:
-            week=''
-            pass
-        case other:
-            week=week
-            pass
+    week = "" if week is False else week
     
 
     return nombre, seleccion, hour, week, idsong, currentyear, date

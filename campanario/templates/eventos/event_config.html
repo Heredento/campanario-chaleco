@@ -4,6 +4,7 @@
 {% block head %}
 <head>
     <title>Registros</title>
+    
     <link rel="stylesheet" href="{% static 'utilidad/main.css' %}">
     <link rel="stylesheet" href="{% static 'eventos/css/event_config.css' %}">
 
@@ -32,9 +33,10 @@ Es
         <h3 >Cambiar hora del campanario</h3>
         <p>Ingresa la hora que aparece en el campanario</p>
         <p>Nota: No importa si lo ingresas con formato de 24 o 12 horas</p>
-        <form action="" method="get">
+        <form action="{% url 'change_hour'%}" method="post">
+            {% csrf_token %}
             🕐
-            <input type="time" name="horareal" id="">
+            <input type="time" name="relojhora" id="">
             
             {% if timeDisable is True %}
                 <button type="submit" disabled>Cambiar la hora</button>
@@ -49,7 +51,7 @@ Es
         <h3 >Agregar canciones</h3>
         <p style="font-size: smaller;">Asegurate de saber lo que haces.</p>
         <p style="font-size: smaller;">El siguiente enlace tiene instrucciones para agregar una cancion.</p>
-        <a style="font-size: smaller;" href="https://github.com/Heredento/campanario-chaleco/tree/main/documentacion">Documentación de github</a>
+        <a style="font-size: smaller;" href="https://github.com/Heredento/campanario-chaleco/blob/main/campanario/media/songs/utilities/templatesong.py">Documentación de github</a>
         <a href="" style="font-size: smaller;">Documentación interna</a>
         <form action="{% url 'uploadFile' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %} 

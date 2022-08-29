@@ -1,10 +1,10 @@
-import os, sys
-sys.path.append(os.path.join(os.getcwd(), 'utilities/'))
-import appfunctions, time as t
-from appfunctions import play, C, D, E, F, G, A, B, C_, utilidad, finalizar
+import time as t
+from utilities.appfunctions import play, C, D, E, F, G, A, B, C_, utilidad, finalizar
+import utilities.appfunctions as appfunctions
+appfunctions.tempo = 120
 
 ### Ingresar el tempo de la canción, recomendamos [40-80]
-appfunctions.tempo = 120
+appfunctions.tempo = 180
 
 ### Dentro de las comillas ingresa el título de la canción
 title="Seppette of the Dead Princess - ZUN"
