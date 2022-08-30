@@ -2,6 +2,7 @@ import os
 from django.db import models
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.template.base import BLOCK_TAG_START
 # today = datetime.datetime.today(pytz.timezone('Etc/GMT+6'))
 ### https://docs.djangoproject.com/en/4.1/topics/files/
 backup_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, '/backups/'))
@@ -34,6 +35,7 @@ class events_list(models.Model):
     song = models.IntegerField()
     currentyear = models.BooleanField(default=False)
     date = models.CharField(blank=True, max_length=20)
+    expiration_date=models.DateTimeField(blank=True, null=True)
 
 class events_files(models.Model):
     filename = models.CharField (max_length=11)

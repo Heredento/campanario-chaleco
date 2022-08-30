@@ -3,6 +3,7 @@ from datetime import date, datetime
 from time import sleep
 sys.path.append(os.getcwd())
 from dependencies import internalGPIO, internalClock
+from validation import update_clock_state
 
 GPIO.setmode(GPIO.BOARD) 
 GPIO.setwarnings(False)
@@ -43,7 +44,7 @@ def guardar_tiempo(hora, minuto):
         ft.write(f"{hora}{minuto}")
     ts.close()
     
-
+update_clock_state(False)
 with open(timefile, 'r') as ts:
     filetime = str(ts.read()).strip() 
 ts.close()
@@ -70,8 +71,10 @@ if len(filetime)  >= 5:
 if filetime!=f"{Now.hour}{Now.minute}":
     hcambiar, mcambiar = int(filetime[:-2]), int(filetime[2:])
     while True:
-        if music_state() is False:
+        if clock_state() is False:
+            update_clock_state(True)
             cambiarhora(hcambiar, mcambiar)
+            update_clock_state(False)
             break
     sleep(1)
 
@@ -80,8 +83,8 @@ while True:
     today = datetime.now()
     Now.hour, Now.minute, Now.second=today.strftime('%I'), today.strftime('%M'), today.strftime('%S')
     validation = [hora != Now.hour or minuto != Now.minute]
-    
-    if int(Now.second) <= 2 and clock_state is False:
+    # and clock_state is False
+    if int(Now.second) <= 2 :
         sleep(1)
         GPIO.output(internalGPIO.add, True)
         sleep(1)

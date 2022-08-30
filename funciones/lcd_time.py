@@ -15,7 +15,7 @@ timefile = os.path.join(os.getcwd(),'funciones/','clocktime/', 'time.txt')
 try:
     device = ssd1306(i2c(port=1, address=0x3C), width=128, height=64, rotate=0)
     device.contrast(10)
-    ssd1306_found = True
+    ssdfound = True
     print('[ÉXITO] SSD1306 encontrado')
 except Exception:
     ssdfound = False
@@ -39,34 +39,56 @@ ip = s.getsockname()[0]
 
 
 try:
-    with open(timefile, 'r') as tfile:
-        clocktime = tfile.read()
-    hora, minuto=int(clocktime[:-2]), int(clocktime[2:])
+    while True:
+        if ssdfound is False:
+            try:
+                device = ssd1306(i2c(port=1, address=0x3C), width=128, height=64, rotate=0)
+                device.contrast(10)
+                ssdfound = True
+                print('[ÉXITO] SSD1306 encontrado')
+            except Exception:
+                ssdfound = False
 
-    with canvas(device, dither=True) as draw:
-        customfont = os.path.join(static, 'VerminVibes1989.ttf')
-        font = ImageFont.truetype(os.path.join(customfont), 30)
-        fontip = ImageFont.truetype(os.path.join(customfont), 10)
-        draw.bitmap((0, 0), logo)
+
+        if lcd_found is False:
+            try:
+                lcd = drivers.Lcd()
+                customimage = os.path.join(static, 'shinobu.png')
+                logo = Image.open(customimage)
+                logo.thumbnail((128, 64), Image.Resampling.BICUBIC)
+                lcd_found = True
+                print('[ÉXITO] LCD_I2C encontrado')
+            except Exception:
+                lcd_found = False
+
+
+
+        with open(timefile, 'r') as tfile:
+            clocktime = tfile.read()
+        if len(clocktime) <=3:
+            clocktime = f'0{clocktime}'  
+        hora, minuto=int(clocktime[:-2]), int(clocktime[2:])
 
         hora_ = f'0{hora}' if hora <= 9 else hora
         minuto_ = f'0{minuto}' if minuto <= 9 else minuto
         timetext=f'{hora_}:{minuto_}'
+
         
-        if ssd1306_found is True:
-            draw.text((55, 25), timetext, font=font)
-            draw.text((70, 55), ip, font=fontip)
-        
+
+        if ssdfound is True:
+            with canvas(device, dither=True) as draw:
+                customfont = os.path.join(static, 'VerminVibes1989.ttf')
+                font = ImageFont.truetype(os.path.join(customfont), 30)
+                fontip = ImageFont.truetype(os.path.join(customfont), 10)
+                
+                draw.bitmap((0, 0), logo)
+                draw.text((55, 25), timetext, font=font)
+                draw.text((70, 55), ip, font=fontip)
+            
         if lcd_found is True:
+            lcd.lcd_backlight(10)  
             lcd.lcd_display_string("  HORA CHALECO", 1)
             lcd.lcd_display_string(f'      {timetext}', 2)
-            
-except KeyboardInterrupt:
-    if lcd_found is True:
-        lcd.lcd_clear()
-        lcd.lcd_backlight(0)  
-
+                
 except Exception as ex:
-    if lcd_found is True:
-        lcd.lcd_clear()
-        lcd.lcd_backlight(0)  
+    print(ex)

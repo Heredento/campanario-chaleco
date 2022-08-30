@@ -55,6 +55,7 @@ def read_timefile():
     with open(timefile, 'r') as f:
         clocktime = str(f.read())
     f.close()
+
     clocktime = f'0{clocktime}' if len(clocktime) == 3 else clocktime
     hora, minuto = int(clocktime[:-2]), int(clocktime[2:])
 
@@ -88,11 +89,10 @@ def remove_minute(hora, minuto):
 
     minuto=minuto-1
     if minuto<=-1:
-        minuto=59
-        hora = hora - 1
+        minuto, hora=59, hora - 1
+
     if hora <= -1:
-        hora = 12
-        minuto = 59 
+        hora, minuto = 12, 59
 
     hora_=str(hora)
     if hora<=9:

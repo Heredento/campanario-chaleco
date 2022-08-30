@@ -1,7 +1,8 @@
 from datetime import datetime
+from threading import Thread
+import os, sys, threading, pytz
 from time import sleep
-import os, sys, threading, pytz, time
-from django.forms import models
+from django.forms import DateInput, models
 from django.template import loader
 from django.contrib.auth.forms import UserCreationForm
 from .forms import CreateUserForm
@@ -13,6 +14,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.contrib.auth.decorators import login_required  
 # https://www.geeksforgeeks.org/datetimefield-django-models/
+
 
 connection = os.path.join(os.path.expanduser('~'), '.campanario')
 sys.path.append(connection)
@@ -37,6 +39,28 @@ def input_time(object, hour_input, minute_input):
     fix_hour.cambiarhora(hour_input, minute_input)
     object.is_active=False
     object.save()
+
+
+def delete_expired_events():
+    while True:
+        today = datetime.today()
+        li = models.events_list.objects.filter(currentyear=True)
+        
+        
+        
+        for object in li:
+            validation = [today.year >= object.expiration_date.year and 
+                      today.month >= object.expiration_date.month and 
+                      today.day >= object.expiration_date.day and
+                      today.hour >= object.expiration_date.hour and 
+                      today.minute >= object.expiration_date.minute] 
+            
+            
+            # print(object.expiration_date)# 
+            if all(validation):
+                object.delete()
+                print(f"{object.name} eliminado")
+                
 
 ## Paginas web inicial
 def signin(request):
@@ -88,7 +112,6 @@ def eventspage(request):
     'noSongs': songs_state,
     'events': events,
     'songs': filesong,
-    'state': "d",
     }
 
     template = loader.get_template('eventos/event_add.html')
@@ -312,7 +335,7 @@ def createEvent(request):
         currentyear = True if request.POST.get('currentyear', False) else False
         
         events = listEvents(name, selection, time, week, song, currentyear)
-        
+        print(events[7], "AAAAAAAAAAAAAAAAAA")
         event=models.events_list(
             name = events[0],
             selection = events[1],
@@ -321,6 +344,7 @@ def createEvent(request):
             song = events[4],
             currentyear = events[5],
             date = events[6],
+            expiration_date = events[7]
         )
         event.save()
               
@@ -445,9 +469,14 @@ def recoverSong(request):
     event.save()
 
     return redirect("/config/")
-    
+
+today = datetime.today()
+
+clean_expired_events = Thread(target=delete_expired_events, 
+                              name=f'Expired clearer at {today}')
 
 
-        
-
-
+state = models.ClockInformation.objects.get(name='server_active')
+print("AAAAAAAAAAAAA", state.is_active)
+if state.is_active is True:
+    clean_expired_events.start()

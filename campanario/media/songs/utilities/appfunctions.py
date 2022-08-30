@@ -1,4 +1,3 @@
-
 import RPi.GPIO as GPIO, time, sys, os
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
@@ -6,21 +5,21 @@ sys.path.append(os.getcwd())
 from dependencies import internalGPIO
 # Definiciones de salidas Raspberry y sus notas
 pines = internalGPIO.music
-C, D, E, F, G, A, B, C_ = pines
+C, D, E, F, G, A, B, C_ = internalGPIO.music
 global tempo
 
 # Constantes para notas
 mH, mL= 7/8, 1/8
-for pin_num, pin in enumerate(pines): #Confifura como OUTPUT los pines en la lista 
+for pin_num, pin in enumerate(internalGPIO.music): #Confifura como OUTPUT los pines en la lista 
     GPIO.setup(pin, GPIO.OUT)
 
 # Funciones de utilidad principales
 def allLow(x): # 0 Logico en todos los pines de salida de notas
-    for pin_num, pin in enumerate(pines):
+    for pin_num, pin in enumerate(internalGPIO.music):
         GPIO.output(pin, True)
     time.sleep(x)
 
-def s(silencio): #Tipo de silencio
+def s(silencio): 
     tps = 60/tempo
     for i in range(1,8):
         if silencio is i:
@@ -28,7 +27,7 @@ def s(silencio): #Tipo de silencio
             y = tps*sucesion 
             time.sleep(y)
 
-def mt(nota): # Tipo de nota (tiempo), x = redonda, blanca, negra, corchea etc..
+def mt(nota): 
     tps = 60/tempo
     for i in range(1,8):
         if nota is i:
@@ -53,7 +52,7 @@ def play(modo=0, tipo=3, *notas): #*argv: notas a reproducir, usar C, D, E, F.. 
         case other:
             print(f"Argumentos invalidos en play({modo},{tipo},{notas})")
             if modo == 1:
-                if notas not in pines:
+                if notas not in internalGPIO.music:
                     print(f"La notas entre {notas} tienen problemas, sólo puedes usar C, D, E, F, G, A, B, C_ SIN COMILLAS y CON COMMAS")
             if modo < 0 or modo > 1:
                 print(f"El módo es {modo} pero sólo puede ser 0 o 1.")
@@ -64,7 +63,7 @@ def play(modo=0, tipo=3, *notas): #*argv: notas a reproducir, usar C, D, E, F.. 
 
 def utilidad():
     print("Configuración:")
-    print(f"{pines}")
+    print(f"{internalGPIO.music}")
     print(f"C, D, E, F, G, A, B, C+")
     print(f"Empezando script midi..")
     print(f"tempo: {tempo}")
