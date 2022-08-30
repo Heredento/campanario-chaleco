@@ -66,7 +66,6 @@ class EventSongsFiles(models.Model):
         on_delete=models.RESTRICT)
     song_file=models.FileField(upload_to=backup_storage)
 
-
 class ClockInformation(models.Model):
     name = models.CharField (max_length=255, blank=True)
     is_active = models.BooleanField(default=False, blank=True)
