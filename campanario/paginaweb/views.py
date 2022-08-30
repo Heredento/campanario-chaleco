@@ -335,7 +335,6 @@ def createEvent(request):
         currentyear = True if request.POST.get('currentyear', False) else False
         
         events = listEvents(name, selection, time, week, song, currentyear)
-        print(events[7], "AAAAAAAAAAAAAAAAAA")
         event=models.events_list(
             name = events[0],
             selection = events[1],
