@@ -1,20 +1,22 @@
-from ast import Is
+import RPi.GPIO as GPIO, time as t
 from datetime import datetime as dtime
-import time as t
+GPIO.setmode(GPIO.BOARD)
+# GPIO.setwarnings(False)
+
 
 # Tiempo definido de espera para cada adelanto y retraso de tiempo
 TiempoParaRotacion = 1
 estadoActivo = TiempoParaRotacion * 0.8 # ochenta porciento
 estadoApagado = TiempoParaRotacion *  0.2 # ochenta porciento
-
-
+pines=[37, 35]
+for pin_num, pin in enumerate(pines): #Confifura como OUTPUT los pines en la lista 
+    GPIO.setup(pin, GPIO.OUT)
 #Funcion para contar el tiempo de la funcion validacion de tiempo
 def contarTiempoMain(correrFuncion, *tiempo):
     st = t.time()
     correrFuncion(tiempo[0], tiempo[1])
     et = t.time()
     tEjecucion = round(et-st, 2)
-    #tEjecucion = 120
     print(f"Tiempo de ejecucion: {tEjecucion}s | Main")
     return tEjecucion
 
@@ -24,7 +26,6 @@ def contarTiempoMinor(correrFuncion, AdelantoRetraso):
     correrFuncion(AdelantoRetraso)
     et = t.time()
     tEjecucion = round(et-st, 2)
-    #tEjecucion = 120
     print(f"Tiempo de ejecucion: {tEjecucion}s | Minor")
     return tEjecucion
 
@@ -57,16 +58,20 @@ def secReal():
 #NumeroDeAdelantosEnMinutos indica la cantidad de veces que se debe adelantar o retrasar
 def adelanto(NumeroDeAdelantosEnMinutos):
     for n in range(NumeroDeAdelantosEnMinutos):
+        GPIO.output(35, True)
         pass # salida alta (adelantar uno)
         t.sleep(estadoActivo)
+        GPIO.output(35, False)
         pass # salida baja
         t.sleep(estadoApagado)
     print(f"\nSe han adelantado: {NumeroDeAdelantosEnMinutos}min")
 
 def retraso(NumeroDeAdelantosEnMinutos):
     for n in range(NumeroDeAdelantosEnMinutos):
+        GPIO.output(37, True)
         pass # salida alta (retrasar uno)
         t.sleep(estadoActivo)
+        GPIO.output(37, False)
         pass # salida baja
         t.sleep(estadoApagado)
     print(f"Se han restablecido: {NumeroDeAdelantosEnMinutos}min\n")
@@ -225,6 +230,6 @@ def controlManualDeHora(horaErronea, minutoErroneo):
 
 
 
-controlManualDeHora(7, 20)
+controlManualDeHora(0, 0)
 
 

@@ -4,9 +4,9 @@ connection = os.path.join(os.path.expanduser('~'), '.campanario')
 cwd = os.getcwdb()
 sys.path.append(connection)
 sys.path.append(cwd)
-from connection import cur
-from getapps import now, singleday, singleweek, singleweekdays, singleweekendays, getsong 
-        
+from apps import now, singleday, singleweek, singleweekdays, singleweekendays, getsong
+
+
 ### Sistema de una canción a la vez
 ### Si un evento concide con la hora
 ### -> Iniciar un thread
@@ -21,12 +21,13 @@ evento = threading.Thread(
 year, month, day, hour, minute, second = (None for i in range(6))
 
 try:
+    print("Está activo ekisde")
+
     notinterruption=True
     threadlist=[]
     while notinterruption:
         
-        
-        
+
     ### Primer orden
         
         ahora=now()        

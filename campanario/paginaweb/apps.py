@@ -1,16 +1,15 @@
-import os, sys, secrets, string, socket, smtplib, ssl, datetime
+import os, sys, secrets, string, socket, smtplib, ssl, datetime, calendar, pytz
 import itertools as it
-cwd=f"{os.getcwd()}"
 connection = os.path.join(os.path.expanduser('~'), '.campanario')
 sys.path.append(connection)
-sys.path.append(cwd)
+sys.path.append(os.getcwd())
 from connection import cur
 from emailcon import emailservice
 from email.message import EmailMessage
 from django.conf import settings
 savefilepath = os.path.join(settings.MEDIA_ROOT, 'songs/')
 savefilebackuppath = os.path.join(settings.MEDIA_ROOT, 'backups/')
-from datetime import datetime
+from datetime import datetime, timedelta, date as dte
 
 def capPermutations(s):
     lu_sequence = ((c.lower(), c.upper()) for c in s)
@@ -19,8 +18,7 @@ def capPermutations(s):
 def handleFile(file):
     ### Comandos de lista negra
     commands=['alter', 'drop', 'truncate', 'database', 'schema',
-              'select', 'dt', ';', 'drop', 'insert', 'fetch', 'lock', 'load', 
-              ]
+              'select', 'dt', ';', 'drop', 'insert', 'fetch', 'lock', 'load', ]
     owo=[]
     for item in commands:
         owo.append(capPermutations(item))
@@ -63,7 +61,7 @@ def saveFile(file):
 
     song=open(f'{savefilepath}{filename}', 'w')
     for line in file:
-        line=line.decode("utf-8").replace("\n", "")
+        line=line.decode("utf-8")
         song.write(line)
     song.close()
     
@@ -163,38 +161,112 @@ def listEvents(name, selection, time, week, songid, currentyear):
     nombre=name
     idsong=int(songid)
     seleccion=int(selection)
-    match(seleccion):
-        case 1:
-            hour = time
-            date=''
-
-        case 2:
-            hour = time
-            date=''
-        case 3:
-            hour = time
-            date=''
-
-        case 4:
-            hour=time[11:]
-            date=f"{time[:-12]}-{time[5:-9]}-{time[8:-6]}"
-            
-        case 5:
-            hour=time
-            date=''
-            week=week
-        
-        
-    match(week):
-        case False:
-            week=''
-            pass
-        case other:
-            week=week
-            pass
     
+    if 0 <=seleccion <=3: 
+        hour, date = time,''
+        
+    elif seleccion == 4:
+        hour=time[11:]
+        date=f"{time[:-12]}-{time[5:-9]}-{time[8:-6]}"
+    
+    elif seleccion == 5:    
+        hour=time
+        date=''
+        week=week
+        
+    week = "" if week is False else week
+    
+    expiration_date = ""
+    today = datetime.today()
+    today_date = dte.today()
+    off_set = timedelta(hours=1)
+    if currentyear is True:
+        if seleccion == 1:
+            date_ = datetime(today.year, 12, 31, int(hour[:-3]), int(hour[3:]), 0)
+            expiration_date = date_ + off_set
+                
+        elif seleccion == 2:
+            last_day = dte(today_date.year, 12, 31)
 
-    return nombre, seleccion, hour, week, idsong, currentyear, date
+            while last_day.weekday() != calendar.MONDAY:
+                last_day -= timedelta(days=1)
+            last_monday = last_day
+            
+            last_day = dte(today_date.year, 12, 31)
+            while last_day.weekday() != calendar.TUESDAY:
+                last_day -= timedelta(days=1)
+            last_tuesday = last_day
+            
+            last_day = dte(today_date.year, 12, 31)
+            while last_day.weekday() != calendar.WEDNESDAY:
+                last_day -= timedelta(days=1)
+            last_wednesday = last_day
+            
+            last_day = dte(today_date.year, 12, 31)
+            while last_day.weekday() != calendar.THURSDAY:
+                last_day -= timedelta(days=1)
+            last_thursday = last_day
+
+            last_day = dte(today_date.year, 12, 31)
+            while last_day.weekday() != calendar.FRIDAY:
+                last_day -= timedelta(days=1)
+            last_friday = last_day
+            
+            last_date = [last_monday.day, last_tuesday.day, last_wednesday.day, last_thursday.day, last_friday.day]
+            date_index = last_date.index(max(last_date))
+            print(last_date, date_index)
+            if date_index == 0:
+                last_day = last_monday
+            elif date_index == 1:
+                last_day = last_tuesday
+            elif date_index == 2:
+                last_day = last_wednesday
+            elif date_index == 3:
+                last_day = last_thursday
+            elif date_index == 4:
+                last_day = last_friday
+                
+            time_ = time
+            hour_, minute_ = int(time_[:-3]), int(time_[3:])
+            date_ = datetime(today.year, last_day.month, last_day.day, hour_, minute_, 0)
+            expiration_date = date_ + off_set
+
+        elif seleccion == 3:
+            last_day = dte(today_date.year, 12, 31)
+            time_ = time
+            hour_, minute_ = int(time_[:-3]), int(time_[3:])
+            while last_day.weekday() != calendar.SUNDAY:
+                last_day -= timedelta(days=1)
+            last_sunday = last_day
+            while last_day.weekday() != calendar.SATURDAY:
+                last_day -= timedelta(days=1)
+            last_saturday = last_day
+            
+            last_day = last_sunday if last_sunday.day > last_saturday.day else last_saturday
+            date_ = datetime(today.year, last_day.month, last_day.day, hour_, minute_, 0)
+            expiration_date = date_ + off_set
+        elif seleccion == 4:
+            time_ = time[11:]
+            hour_, minute_ = int(time_[:-3]), int(time_[3:])
+            month, day = int(time[5:-9]), int(time[8:-6])
+            expiration_date = datetime(today.year, month, day, hour_, minute_, 0) + off_set
+        elif seleccion == 5:
+            hour_, minute_ = int(time[:-3]), int(time[3:])
+            
+            date_ = datetime.strptime(week + '-1', "%Y-W%W-%w") + timedelta(days=6)
+            final_date = datetime(today.year, date_.month, date_.day, hour_, minute_, 0)
+            print(final_date)
+            expiration_date = final_date + off_set
+
+        tz = pytz.timezone('Etc/GMT+6')
+        
+        ex = expiration_date
+        localized_date = datetime(ex.year, ex.month, ex.day, ex.hour, ex.minute, ex.second, tzinfo=tz)
+        expiration_date = localized_date.strftime("%Y-%m-%d %H:%M:%S%z")
+    
+    elif currentyear is False:
+        expiration_date=None
+    return nombre, seleccion, hour, week, idsong, currentyear, date, expiration_date
 
 def getNowDate():
     now = str(datetime.now())

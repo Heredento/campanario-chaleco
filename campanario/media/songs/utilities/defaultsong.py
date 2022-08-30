@@ -1,5 +1,5 @@
 import os, sys
-sys.path.append(os.path.join(os.getcwd, 'utilities'))
+sys.path.append(os.path.join(os.getcwd(), 'utilities/'))
 import appfunctions, time as t
 from appfunctions import play, C, D, E, F, G, A, B, C_, utilidad, finalizar
 
@@ -79,4 +79,6 @@ def appsong():
     finally:
         finalizar(t.time(), start_time)
 
-    
+if __name__ == '__main__':
+    appsong()
+

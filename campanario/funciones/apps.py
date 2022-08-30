@@ -1,9 +1,11 @@
 import os, sys, time as t
+from re import escape
 from datetime import datetime, timedelta
 from django.apps import AppConfig
 connection = os.path.join(os.path.expanduser('~'), '.campanario')
 sys.path.append(connection)
 from connection import cur
+from django.conf import settings
 
 class FuncionesConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
@@ -113,16 +115,41 @@ def alldays():
         
     return idlist, timelist, currentyear, songidlist
 
+
+def playsong(option, song):
+    
+    try:
+        if option == 1:
+            filenamepath = sys.path.append(os.path.join(settings.MEDIA_ROOT, 'songs/', song))
+            
+            with open(filenamepath) as f:
+                exec(compile(f.read(), filenamepath, "exec"))
+            
+        elif option == 0:
+            filenamepath = sys.path.append(os.path.join(settings.MEDIA_ROOT, 'backups/', 'utilities/', 'defaultsong.py'))
+            
+            with open(filenamepath) as f:
+                exec(compile(f.read(), filenamepath, "exec"))
+        else:
+            print("Ha habido un error")
+    except Exception as ex:
+        print(f'[EXCEPCIÓN] {ex}')
+        
+
+
 def getsong(ids: int):
     query = f'select filename from paginaweb_events_files where id={ids};'
     cur.execute(query)
     res = cur.fetchall()
-    print(res)
     if len(res) == 0:
-        print("Usando canción default")
-    if len(res) == 1:
-        songfile = "".join(res[0]).replace(".py", "")
+        playsong(0, 'defaultsong')
+    elif len(res) == 1:
+        songfile = "".join(res[0])
+        playsong(0, songfile)
         print(songfile)
+    else:
+        print("QUE")
+
 
 
     año, mes, dia, hora, minuto, segundo=now()

@@ -5,3 +5,15 @@ psycopg2==2.9.3
 bcrypt==3.2.2
 setuptools==58.1.0
 RPi.GPIO==0.7.1
+django-extensions==3.2.0
+Adafruit-GPIO==1.0.3
+Adafruit-PureIO==1.1.9
+Adafruit-SSD1306==1.6.2
+pytz==2022.2.1
+cbor2==5.4.3
+luma.core==2.3.1
+luma.oled==3.8.1
+Pillow==9.2.0
+smbus==1.1.post2
+smbus2==0.4.2
+django-extensions==3.2.0

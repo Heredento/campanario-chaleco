@@ -36,58 +36,58 @@
     `\dt;`
 
 
-Accesar base de datos
-    sudo su postgres
-    psql
+*Accesar base de datos*
+    `sudo su postgres`
+    `psql`
 
-Comandos postgresql
-    service postgresql
+*Comandos postgresql*
+    `service postgresql`
 
-Contraseña superusuario postgres
+*Contraseña superusuario postgres*
     20160176
 
-Conectar a base de datos
-    \c camapanariodb;
+*Conectar a base de datos*
+    `\c camapanariodb;`
 
-Crear usuario 
-    CREATE USER campanario WITH PASSWORD 'PASSWORD';
+*Crear usuario*
+    `CREATE USER campanario WITH PASSWORD 'PASSWORD';`
 
-Info usuario DB 
+*Info usuario DB* 
     name: campanariosudo
     contraseña: 20160176
 
-Checkear usuarios 
-    \du
+*Checkear usuarios* 
+    `\du`
 
-Poner roles para usuarios db 
-    ALTER USER nombreusuario WITH SUPERUSER;
+*Poner roles para usuarios db* 
+    `ALTER USER nombreusuario WITH SUPERUSER;`
 
-Borrar usuario 
-    DROP USER nombreusuario;
+*Borrar usuario* 
+    `DROP USER nombreusuario;`
 
-Detener base de datos
-    service  postgresql stop
+*Detener base de datos*
+    `service  postgresql stop`
 
-Cambiar de usuario en linux 
-    su <option> <user>
+*Cambiar de usuario en linux* 
+    `su <option> <user>`
 
-Dejar la base de datos 
-    \q
+*Dejar la base de datos* 
+    `\q`
 
-Revisar las bases de datos 
-    \l
+*Revisar las bases de datos* 
+    `\l`
 
-Crear base de datos 
-    CREATE DATABASE nombrebase;
+*Crear base de datos*
+    `CREATE DATABASE nombrebase;`
 
 create table amigos.test(firstname CHAR(15), lastname CHAR(20));
 select * from amigos.text;
 \d amigos.test; >>> Describe la base de datos
-insert into amigos.test values('Carlos', 'López')
+`insert into amigos.test values('Carlos', 'López')`
 
-psql -U tu_usuario -h 127.0.0.1 tu_base_de_datos
+`psql -U tu_usuario -h 127.0.0.1 tu_base_de_datos`
 
-psql -U campanariosudo -h 127.0.0.1 campanariodb
+`psql -U campanariosudo -h 127.0.0.1 campanariodb`
 
 
 select * from userform_usuarioform;

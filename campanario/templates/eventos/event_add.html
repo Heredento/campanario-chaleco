@@ -19,6 +19,8 @@
         
 
         <div class="bloque flexrow midtransparent">
+            
+            
             <h2 class="centeredtext">Agendar evento</h2>
             <form action="{% url 'createEvent' %}" method="post">
                 {% csrf_token %}
@@ -41,7 +43,7 @@
                 </select>
                 <br>
                 <input type="checkbox" name="currentyear" id="currentyear" class="marginc"> 
-                <label for="currentyear">Todos los años</label>
+                <label for="currentyear">Sólo este año</label>
                 <p class="marginc" for="currentyear">Nota: los años son obviados.</p>
                 <p id="eventosid" class="customp"></p>
                 <br>
@@ -109,10 +111,10 @@
                                         <div class="flex flexcolumn webkitsize flexcenter"> 
                                                                                            
                                                 {% if eventos.currentyear == True %}
-                                                    <p class="customp2">Todos los años</p>
+                                                    <p class="customp2">Sólo este año</p>
     
                                                 {% elif eventos.currentyear == False %}
-                                                    <p class="customp2">Sólo este año</p>
+                                                    <p class="customp2">Todos los años</p>
     
                                                 {% endif %} 
                                         </div>
@@ -127,8 +129,21 @@
                                         </div>
                                         <div class="flex flexcolumn webkitsize"> 
                                             <p class="customp2" style="text-align: justify;">
-                                                🎶  {{eventos.song}}  
-                                                {% comment %} ID: {{eventos.id}} {% endcomment %}
+                                            <div id="default + {{eventos.id}}">
+                                                🎶 Canción predeterminada :D
+                                            </div>
+                                                {% for song in songs %}
+
+                                                        {% if eventos.song == song.id %}
+                                                        🎶 {{song.title}}
+                                                        <script>
+                                                            document.getElementById("default + {{eventos.id}}").style.display = "none";
+                                                        </script>
+                                                        {% endif %}
+
+                                                {% endfor %} 
+
+
                                             </p>
                                         </div>
                                     </div>
