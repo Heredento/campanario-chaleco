@@ -12,38 +12,59 @@
 {% endblock %}
 
 
-
 {% include 'extends/extends_navbar.html' %}
-
-
-
 
 {% block body %}
 <body background="{% static 'eventos/img/bg_events.gif' %}" >
 <br><br>
-    <div class="main-block midtransparent">    
-    
-        {% comment %}<textarea class="noresizable leftalign" id="lineacomandos" cols="70" rows="10"  disabled>
-Hola
-Esta
-Es  
-        </textarea><hr> {% endcomment %}
-        {% comment %} <input type="text" placeholder="Ingresar comando" class="fitwidth"> {% endcomment %}
-        {% comment %} <input type="submit" class="sendbutton" placeholder="Enviar"> {% endcomment %}
+    <div class="main-block midtransparent">
+        <h3>Programar encendido de agujas</h3>    
+        <form action="{% url 'setlightstate' %}" method="post">
+            {% csrf_token %}
+            
+            <label for="startid">Inicio: </label>
+            <input type="time" min="00:00:00"  name ="start" id="startid" required>
+            <label for="finishid">Fin: </label>
+            
+            <input type="time" name ="finish" id="finishid" required>
+            <br><br>
+            <input type="submit" value="Guardar">
+            <script>
+                var start_time = document.getElementById("startid").max;
+                document.getElementById("finishid").max = start_time;
+
+            </script>
+        </form>
+        <div class="normalbg">
+            <h5 class="no-margin">Tiempo establecido actual</h5>
+            {% for time in sched_lights %}
+                <div class="flex flexcenter">
+                    <div class="light-item"><p>Inicio: {{time.start_time}}</p></div>
+                    <div class="light-item"><p>Fin: {{time.finish_time}}</p></div>
+                </div>
+            <br>
+            {% empty %}
+                <p>No hay nada aquí</p>
+            {% endfor %}
+        </div>
+
+
         <h3 >Cambiar hora del campanario</h3>
         <p>Ingresa la hora que aparece en el campanario</p>
         <p>Nota: No importa si lo ingresas con formato de 24 o 12 horas</p>
         <form action="{% url 'change_hour'%}" method="post">
             {% csrf_token %}
             🕐
-            <input type="time" name="relojhora" id="">
+            <input type="time" name="relojhora" required>
             
             {% if timeDisable is True %}
                 <button type="submit" disabled>Cambiar la hora</button>
+                <p>El cambio de hora se encuentra en proceso...</p>
             {% elif timeDisable is False %}
-                <button type="submit" >Cambiar la hora</button>
+                <button id="submitbutton" onclick="this.disabled=true,this.form.submit();" type="submit" >
+                Cambiar la hora
+                </button>
             {% endif %}
-            {{timeDisable}}
         </form>
 
         <hr>

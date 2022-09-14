@@ -1,7 +1,8 @@
-from datetime import datetime
+from datetime import date, datetime, time
 from threading import Thread
 import os, sys, threading, pytz
 from time import sleep
+
 from django.forms import DateInput, models
 from django.template import loader
 from django.contrib.auth.forms import UserCreationForm
@@ -10,11 +11,9 @@ from .apps import handleFile, saveFile, sendAuthEmail, generateCode, getNowDate
 from .apps import recoverFileSong, listEvents, saveFileBackup, deleteFile
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, request
 from django.template import loader
 from django.contrib.auth.decorators import login_required  
-# https://www.geeksforgeeks.org/datetimefield-django-models/
-
 
 connection = os.path.join(os.path.expanduser('~'), '.campanario')
 sys.path.append(connection)
@@ -29,7 +28,35 @@ from datetime import datetime
 server_active = models.ClockInformation.objects.filter(name='server_active')
 clock_state = models.ClockInformation.objects.filter(name='change_hour')
 music_state = models.ClockInformation.objects.filter(name='play_songs')
+lights_state = models.ClockInformation.objects.filter(name='clock_lights')
 
+
+def set_lights_state(request):
+    today = datetime.now(pytz.timezone('Etc/GMT+6'))
+
+    time_now=time(today.hour, today.minute, 0)
+    start = request.POST.get('start')
+    finish = request.POST.get('finish')
+    
+    start_hour, start_minute = int(start[:-3]), int(start[3:])
+    finish_hour, finish_minute = int(finish[:-3]), int(finish[3:])
+
+    time_start = time(start_hour, start_minute)
+    time_finish = time(finish_hour, finish_minute)
+
+    p = models.ScheduledTasks.objects.filter(name="scheduled_lights")
+    match (len(p)):
+        case 0:
+            task = models.ScheduledTasks(
+                name="scheduled_lights", 
+                start_time = time_start,
+                finish_time = time_finish,
+            ).save()
+        case 1:
+            ct = p[0]
+            ct.start_time, ct.finish_time = time_start, time_finish
+            ct.save()
+    return redirect("/config/")
 
 
 def input_time(object, hour_input, minute_input):
@@ -43,24 +70,18 @@ def input_time(object, hour_input, minute_input):
 
 def delete_expired_events():
     while True:
-        today = datetime.today()
+        today = datetime.now(pytz.timezone('Etc/GMT+6'))
         li = models.events_list.objects.filter(currentyear=True)
-        
-        
-        
         for object in li:
-            validation = [today.year >= object.expiration_date.year and 
-                      today.month >= object.expiration_date.month and 
-                      today.day >= object.expiration_date.day and
-                      today.hour >= object.expiration_date.hour and 
-                      today.minute >= object.expiration_date.minute] 
-            
-            
-            # print(object.expiration_date)# 
-            if all(validation):
+            if (today >= object.expiration_date):
+                print(f"{object.name} eliminando")
                 object.delete()
-                print(f"{object.name} eliminado")
                 
+def error_404_view(request, exception):
+    template = loader.get_template('extends/404.html')
+    return HttpResponse(template.render({}, request))
+
+    
 
 ## Paginas web inicial
 def signin(request):
@@ -122,21 +143,16 @@ def configpage(request):
     events = models.events_files.objects.all()
     backups  = models.events_backups.objects.all()
     clock_state = models.ClockInformation.objects.filter(name='change_hour')
-    
+    lights_time = models.ScheduledTasks.objects.filter(name='scheduled_lights')
     
     
     if len(clock_state) == 0:
-        ch = models.ClockInformation(
-                name = 'change_hour',
-                is_active = True,)
-        ch.save()
+        ch = models.ClockInformation(name = 'change_hour',is_active = True,).save()
+
     
     if len(clock_state) >= 2:
         clock_state.delete()
-        ch = models.ClockInformation(
-                name = 'change_hour',
-                is_active = False,)
-        ch.save()
+        ch = models.ClockInformation(name = 'change_hour',is_active = False,).save()
         
     if len (clock_state) == 1:
         change_state = clock_state[0].is_active
@@ -149,6 +165,7 @@ def configpage(request):
         'songname': '',
         'events': events,
         'backups': backups,
+        'sched_lights': lights_time,
     }
     return HttpResponse(template.render(contenido, request))
 
@@ -156,13 +173,6 @@ def configpage(request):
 def createUser(request):
     form = UserCreationForm()
     if (request.method=='POST'):
-        
-        # username = ''.join(request.POST['username'])
-        # email = ''.join(request.POST['email'])
-        # pass1 = ''.join(request.POST['password1'])
-        # pass2 = ''.join(request.POST['password2'])
-        
-        
         
         username = request.POST.get('username')
         email = request.POST.get('email')
@@ -476,6 +486,6 @@ clean_expired_events = Thread(target=delete_expired_events,
 
 
 state = models.ClockInformation.objects.get(name='server_active')
-print("AAAAAAAAAAAAA", state.is_active)
 if state.is_active is True:
-    clean_expired_events.start()
+    pass
+    # clean_expired_events.start()

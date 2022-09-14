@@ -20,3 +20,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('paginaweb.urls')),
 ]
+handler404 = 'paginaweb.views.error_404_view'

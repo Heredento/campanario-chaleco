@@ -36,8 +36,8 @@
                     <option value="" class="prioridad2" disabled>-Prioridad II-</option>
                     <option value="5">Semana específica</option>
                     <option value="" class="prioridad3" disabled>-Prioridad III-</option>
-                    <option value="2">Lunes a viernes</option>
-                    <option value="3">Sabado a domingo</option>
+                    <option value="3">Lunes a viernes</option>
+                    <option value="2">Sabado a domingo</option>
                     <option value="" class="prioridad4" disabled>-Prioridad IV-</option>
                     <option value="1">Todos los días</option>
                 </select>
@@ -95,9 +95,9 @@
                                         <div class="flex flexcolumn webkitsize flexcenter "> 
                                             {% if eventos.selection == 1 %}
                                                 <p class="customp2">Todos los días</p>
-                                            {% elif eventos.selection == 2 %}
-                                                <p class="customp2">Lunes a Viernes</p>
                                             {% elif eventos.selection == 3 %}
+                                                <p class="customp2">Lunes a Viernes</p>
+                                            {% elif eventos.selection == 2 %}
                                                 <p class="customp2">Sábados a Domingos</p>
                                             {% elif eventos.selection == 4 %}
                                                 <p class="customp2">Día específico</p>

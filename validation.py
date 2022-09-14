@@ -22,9 +22,20 @@ def clock_state():
     clock_state = cur.fetchall()
     return clock_state
 
+def lights_state():
+    clock_query = f"select is_active from paginaweb_ClockInformation where name='clock_lights';"
+    cur.execute(clock_query)
+    clock_state = cur.fetchall()
+    return clock_state
+
 
 if len(music_state()) == 0:
     query = f"insert into paginaweb_ClockInformation(name, is_active) VALUES ('play_songs', false);"
+    cur.execute(query)
+    connection.commit()
+    
+if len(lights_state()) == 0:
+    query = f"insert into paginaweb_ClockInformation(name, is_active) VALUES ('clock_lights', false);"
     cur.execute(query)
     connection.commit()
 

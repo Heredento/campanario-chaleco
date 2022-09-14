@@ -1,0 +1,21 @@
+{% load static %}
+{% block head %}
+<head>
+    <title>Página no encontrada</title>
+    <link rel="stylesheet" href="{% static 'utilidad/main.css' %}">
+
+</head>
+{% endblock %}
+
+{% block content %}
+<body background="{% static 'formulario/img/bg_validate_registered.jpg' %}">
+    <div class="fullsize flexrow flexcenter">
+        <div class="midtransparent flexcolumn flexcenter fit">
+            <h3 style="margin: 6px;">Algo extraño ha pasado...</h3>
+            <h5 style="margin: 6px;">Página no encontrada</h5>
+            <a href="/events"><p>¿Ir a la página principal?</p></a>
+        </div>
+    </div>
+</body>
+
+{% endblock %}

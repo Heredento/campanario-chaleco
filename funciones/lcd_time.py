@@ -1,6 +1,5 @@
+import threading
 import time , sys, os, drivers, RPi.GPIO as GPIO
-
-from django.db.models import Expression 
 from luma.core.interface.serial import i2c
 from luma.oled.device import ssd1306
 from luma.core.render import canvas
@@ -8,6 +7,12 @@ from PIL import Image, ImageFont, ImageDraw
 from time import sleep
 import socket
 sys.path.append(os.getcwd())
+
+
+
+time_folder = os.path.join(os.getcwd(), 'funciones/', 'clocktime/')
+hour_file = os.path.join(time_folder, 'hour.txt')
+min_file = os.path.join(time_folder, 'minute.txt')
 
 static = os.path.join(os.getcwd(), 'funciones/', 'media/')
 timefile = os.path.join(os.getcwd(),'funciones/','clocktime/', 'time.txt')
@@ -32,14 +37,44 @@ except Exception:
     lcd_found = False
     print('[ERROR] LCD_I2C no encontrado')
     
+def get_ip():
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        ip = s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+    except Exception:
+        ip = "127.0.0.1"
+        
+    return ip    
+    
+def leer_hora():
+    try: 
+        with open(min_file, 'r') as m:
+            m.flush()
+            minuto = int(m.read())
+        m.close()
+        with open(hour_file, 'r') as h:
+            h.flush()
+            hora = int(h.read())
+        h.close()
+    
+    
+        hora_ = f'0{hora}' if hora <= 9 else hora
+        minuto_ = f'0{minuto}' if minuto <= 9 else minuto
+        tiempo = f'{hora_}:{minuto_}'
 
-s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-ip = s.connect(("8.8.8.8", 80))
-ip = s.getsockname()[0]
+        return tiempo
+    except Exception:
+        return True    
+    
 
+saved_time = ""
+while True:
+    timetext=leer_hora()
+    if timetext is True:
+        continue
 
-try:
-    while True:
+    try:
         if ssdfound is False:
             try:
                 device = ssd1306(i2c(port=1, address=0x3C), width=128, height=64, rotate=0)
@@ -60,19 +95,14 @@ try:
                 print('[ÉXITO] LCD_I2C encontrado')
             except Exception:
                 lcd_found = False
+                
 
-
-
-        with open(timefile, 'r') as tfile:
-            clocktime = tfile.read()
-        if len(clocktime) <=3:
-            clocktime = f'0{clocktime}'  
-        hora, minuto=int(clocktime[:-2]), int(clocktime[2:])
-
-        hora_ = f'0{hora}' if hora <= 9 else hora
-        minuto_ = f'0{minuto}' if minuto <= 9 else minuto
-        timetext=f'{hora_}:{minuto_}'
-
+   
+        
+        
+        if saved_time != timetext:
+                saved_time = timetext
+                print(f"Hora guardada: {timetext} ")
         
 
         if ssdfound is True:
@@ -83,12 +113,13 @@ try:
                 
                 draw.bitmap((0, 0), logo)
                 draw.text((55, 25), timetext, font=font)
-                draw.text((70, 55), ip, font=fontip)
+                draw.text((70, 55), get_ip(), font=fontip)
             
         if lcd_found is True:
             lcd.lcd_backlight(10)  
             lcd.lcd_display_string("  HORA CHALECO", 1)
             lcd.lcd_display_string(f'      {timetext}', 2)
-                
-except Exception as ex:
-    print(ex)
+            
+        sleep(1)
+    except Exception as ex:
+        print(f"{os.path.basename(__file__)}\nEX: {ex}")

@@ -20,11 +20,18 @@ db = os.path.join(os.path.expanduser('~'), '.campanario')
 sys.path.append(db)
 from connection import cur
 
+time_folder = os.path.join(os.getcwd(), 'funciones/', 'clocktime/')
+hour_file = os.path.join(time_folder, 'hour.txt')
+min_file = os.path.join(time_folder, 'minute.txt')
+
+
 print(f"[DONE] {os.path.basename(__file__)} cargado.")
     
 today = datetime.now()
 class Now:
     hour, minute, second=today.strftime('%I'), today.strftime('%M'), today.strftime('%S')
+
+
 
 def clock_state():
     clock_query = f"select is_active from paginaweb_ClockInformation where name='change_hour';"
@@ -39,41 +46,48 @@ def music_state():
     return music_state
 
 
-def guardar_tiempo(hora, minuto):
-    with open(timefile, "wt") as ft:
-        ft.write(f"{hora}{minuto}")
-    ts.close()
+def guardar_tiempo(hora:int, minuto:int):
+    hora_ = f'0{hora}' if hora <= 9 else f'{hora}'
+    minuto_ = f'0{minuto}' if minuto <= 9 else f'{minuto}'
     
+    with open(hour_file, 'w') as h:
+        h.flush()
+        h.write(hora_)
+    h.close()
+    
+    with open(min_file, 'w') as m:
+        m.flush()
+        m.write(minuto_)
+    m.close()
+    
+
+
+def revisar_tiempo():
+    with open(hour_file, 'r') as h:
+        h.flush()
+        hora = int(h.read())
+    h.close()
+    
+    with open(min_file, 'r') as m:
+        m.flush()
+        minuto = int(m.read())
+    m.close()
+    hora_ = f'0{hora}' if hora <= 9 else f'{hora}'
+    minuto_ = f'0{minuto}' if minuto <= 9 else f'{minuto}' 
+    
+    return hora_, minuto_
+   
 update_clock_state(False)
-with open(timefile, 'r') as ts:
-    filetime = str(ts.read()).strip() 
-ts.close()
-
-if len(filetime) <= 3:
-    print(f"[STARTUP] ARCHIVO DE TIEMPO NO ESTÁ COMPLETO: {filetime}")
-    guardar_tiempo(Now.hour, Now.minute)
-
-    sleep(1)
-    with open(timefile, 'r') as ts:
-        filetime = str(ts.read()).strip() 
-    ts.close()
-
-if len(filetime)  >= 5:
-    print(f"[STARTUP] ARCHIVO DE TIEMPO ESTA MÁL FORMATEADO: {filetime}")
-    guardar_tiempo(Now.hour, Now.minute)
-
-    sleep(1)
-    with open(timefile, 'r') as ts:
-        filetime = str(ts.read()).strip() 
-    ts.close()
-
-
-if filetime!=f"{Now.hour}{Now.minute}":
-    hcambiar, mcambiar = int(filetime[:-2]), int(filetime[2:])
+check_time = revisar_tiempo()
+if f'{check_time[0]}{check_time[1]}' != f"{Now.hour}{Now.minute}":
+    
+    h_cambiar, m_cambiar = int(check_time[0]), int(check_time[1])
     while True:
         if clock_state() is False:
             update_clock_state(True)
-            cambiarhora(hcambiar, mcambiar)
+            
+            cambiarhora(h_cambiar, m_cambiar)
+            
             update_clock_state(False)
             break
     sleep(1)
@@ -82,42 +96,16 @@ if filetime!=f"{Now.hour}{Now.minute}":
 while True:
     today = datetime.now()
     Now.hour, Now.minute, Now.second=today.strftime('%I'), today.strftime('%M'), today.strftime('%S')
-    validation = [hora != Now.hour or minuto != Now.minute]
-    # and clock_state is False
-    if int(Now.second) <= 2 :
-        sleep(1)
-        GPIO.output(internalGPIO.add, True)
-        sleep(1)
-        GPIO.output(internalGPIO.add, False)
-        sleep(1)
-
-        print(f'PIN: {internalGPIO.add}')
-
-    with open(timefile, 'r') as ts:
-        filetime = ts.read()
-    ts.close()
-
-    hora, minuto=filetime[:-2], filetime[2:]
     
-    if len(filetime) <= 3 and clock_state() is False:
-        print("[RUNTIME] ARCHIVO DE TIEMPO NO ESTÁ COMPLETO...")
-        guardar_tiempo(Now.hour, Now.minute)
-        sleep(1)
-        
-    if filetime == "" and clock_state() is False:
-        print(f"[RUNTIME] Tiempo vacío: --:-- | {Now.hour}:{Now.minute}")
-        guardar_tiempo(Now.hour, Now.minute)
-        sleep(1)
-    
+    try:    
+        if int(Now.second) <= 2 and clock_state() is False:
+            sleep(1)
+            GPIO.output(internalGPIO.add, True)
+            sleep(1)
+            GPIO.output(internalGPIO.add, False)
+            sleep(1)
+            guardar_tiempo(int(Now.hour), int(Now.minute))
 
-    ## Update time
-    if all(validation) and clock_state() is False:
-        horaleida, minutoleido=filetime[:-2], filetime[2:] 
-        print(f"SAVED: {horaleida}:{minutoleido} | NOW: {Now.hour}:{Now.minute}")
-        hora, minuto = horaleida, minutoleido
-
-        with open(timefile, "wt") as ft:
-            ft.write(f"{Now.hour}{Now.minute}")
-        ts.close()
-        sleep(1)
-            
+    except Exception as ex:
+        guardar_tiempo(Now.hour, Now.minute)
+        print(f"{os.path.basename(__file__)}\nEX: {ex}")
