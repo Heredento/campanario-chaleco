@@ -488,4 +488,4 @@ clean_expired_events = Thread(target=delete_expired_events,
 state = models.ClockInformation.objects.get(name='server_active')
 if state.is_active is True:
     pass
-    # clean_expired_events.start()
+    clean_expired_events.start()
