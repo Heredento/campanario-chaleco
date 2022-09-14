@@ -1,9 +1,15 @@
+from PIL.Image import Resampling
 import RPi.GPIO as GPIO, time as t, os, sys
 GPIO.setmode(GPIO.BOARD)
 sys.path.append(os.getcwd())
 from dependencies import internalGPIO, internalClock
 GPIO.setwarnings(False)
 from datetime import datetime as dtime
+from datetime import timedelta as tdelta
+time_folder = os.path.join(os.getcwd(), 'funciones/', 'clocktime/')
+hour_file = os.path.join(time_folder, 'hour.txt')
+min_file = os.path.join(time_folder, 'minute.txt')
+
 timefile = os.path.join(os.getcwd(), 'funciones/', 'clocktime/', 'time.txt')
 
 
@@ -52,14 +58,14 @@ class Ahora:
     
 
 def read_timefile():
-    with open(timefile, 'r') as f:
-        clocktime = str(f.read())
-    f.close()
-
-    clocktime = f'0{clocktime}' if len(clocktime) == 3 else clocktime
-    hora, minuto = int(clocktime[:-2]), int(clocktime[2:])
-
-    print(f"CLK: {clocktime} | CLK_as_INT: {hora}:{minuto}")
+    with open(min_file, 'r') as m:
+        m.flush()
+        minuto = int(m.read())
+    m.close()
+    with open(hour_file, 'r') as h:
+        h.flush()
+        hora = int(h.read())
+    h.close()
     return hora, minuto
 
 
@@ -71,66 +77,48 @@ def add_minute(hora, minuto):
     if hora >= 13:
         hora=1
         minuto=0
+        
+    hora_ = f'0{hora}' if hora<=9 else f'{hora}' 
+    minuto_ = f'0{minuto}' if minuto<=9 else f'{minuto}'
+
+    with open(hour_file, 'w') as h:
+        h.flush()
+        h.write(hora_)
+    h.close()
     
-    hora_=str(hora)
-    if hora<=9:
-        hora_=f'0{hora}'
-    minuto_=str(minuto)
-    if minuto<=9:
-        minuto_=f'0{minuto}'
+    with open(min_file, 'w') as m:
+        m.flush()
+        m.write(minuto_)
+    m.close()
     
-    timeformatted = f'{hora_}{minuto_}'
-    with open(timefile, 'w') as f:
-        f.write(timeformatted)
-    f.close()
 
 
-def remove_minute(hora, minuto):
-
-    minuto=minuto-1
-    if minuto<=-1:
-        minuto, hora=59, hora - 1
-
-    if hora <= -1:
-        hora, minuto = 12, 59
-
-    hora_=str(hora)
-    if hora<=9:
-        hora_=f'0{hora}'
-    minuto_=str(minuto)
-    if minuto<=9:
-        minuto_=f'0{minuto}'
-
-    timeformatted = f'{hora_}{minuto_}'
-    with open(timefile, 'w') as f:
-        f.write(timeformatted)
-    f.close()
 
 #NumeroDeAdelantosEnMinutos indica la cantidad de veces que se debe adelantar o retrasar
 def adelanto(adelantos_minutos):
-    for n in range(adelantos_minutos):
-        hora, minuto = read_timefile()
-        GPIO.output(internalGPIO.add, True)
-        t.sleep(internalClock.high_state)
-        GPIO.output(internalGPIO.add, False)
-        t.sleep(internalClock.low_state)
-        add_minute(hora, minuto)
-    print(f"\nADELANTADOS: {adelantos_minutos}min")
+    try:
+        for n in range(adelantos_minutos):
+            hora, minuto = read_timefile()
+            GPIO.output(internalGPIO.add, True)
+            t.sleep(internalClock.high_state)
+            GPIO.output(internalGPIO.add, False)
+            t.sleep(internalClock.low_state)
+            add_minute(hora, minuto)
+        print(f"\nADELANTADOS: {adelantos_minutos}min")
+    except Exception:
+        with open(hour_file, 'w') as h:
+            h.flush()
+            h.write(hora)
+        h.close()
+        
+        with open(min_file, 'w') as m:
+            m.flush()
+            m.write(minuto)
+        m.close()
     
 
-def retraso(retrasos_minutos):
-    for n in range(retrasos_minutos):
-        hora, minuto = read_timefile()
-        GPIO.output(internalGPIO.delete, True)  # salida alta (retrasar uno)
-        t.sleep(internalClock.high_state)
-        GPIO.output(internalGPIO.delete, False) # salida baja
-        t.sleep(internalClock.low_state)
-        remove_minute(hora, minuto)
-    # GPIO.cleanup()
-    print(f"\nRETRASADOS: {retrasos_minutos}min\n")
 
 ## Convierte cualquiere numero en formato de 12 horas y 60 minutos
-
 class convertir:
     def hora(x):
         hora = x - ((int(x/12))*(12))
@@ -144,7 +132,8 @@ class convertir:
 
 
 def validar_tiempo(hora_ingresada, minuto_ingresado):
-
+    ahora_ = dtime.now()
+    dt = dtime(ahora_.year, ahora_.month, ahora_.day, int(hora_ingresada), int(minuto_ingresado), 0)
     conversion_hora=convertir.hora(hora_ingresada)
     conversion_minuto=convertir.minuto(minuto_ingresado) 
     
@@ -156,16 +145,28 @@ def validar_tiempo(hora_ingresada, minuto_ingresado):
 
     if tiempo_calculado <= -1:
         tiempo_calculado=abs(tiempo_calculado)
+        retraso_en_adelantos=(12*60) - (tiempo_calculado)
+        time_to_fix = dt + tdelta(minutes=retraso_en_adelantos)
+        time_to_fix=time_to_fix.strftime('%I:%M:%S')
+        print(f"ARREGLAR {time_to_fix}")
+        print(f'RETRASO DE {tiempo_calculado}min')
         print(f'HORA REAL: {Ahora.hora()}:{Ahora.minuto()}')
         print(f'HORA FALSA: {conversion_hora}:{conversion_minuto}')
-        print(f'RETRASO DE {tiempo_calculado}min')
-        retraso(tiempo_calculado)
+        
+        adelanto(retraso_en_adelantos)
+        print("Tiempo de retroceso reestablecido")
+    
+        
         
     elif tiempo_calculado >= 1:
         tiempo_calculado=abs(tiempo_calculado)
+        time_to_fix = dt + tdelta(minutes=tiempo_calculado)
+        time_to_fix=time_to_fix.strftime('%I:%M:%S')
+        print(f"ARREGLAR {time_to_fix}")
+        print(f'ADELANTO DE {tiempo_calculado}min')
         print(f'HORA REAL: {Ahora.hora()}:{Ahora.minuto()}')
         print(f'HORA FALSA: {conversion_hora}:{conversion_minuto}')
-        print(f'ADELANTO DE {tiempo_calculado}min')
+        
         adelanto(tiempo_calculado)
         
     elif tiempo_calculado == 0:
@@ -177,10 +178,20 @@ def cambiarhora(hora_erronea, minuto_erroneo):
 
     conversion_hora=convertir.hora(hora_erronea)
     conversion_minuto=convertir.minuto(minuto_erroneo) 
-    timeformatted = f'{conversion_hora}{conversion_minuto}'
-    with open(timefile, 'w') as f:
-        f.write(timeformatted)
-    f.close()
+    
+    hora_ = f'0{conversion_hora}' if conversion_hora <= 9 else f'{conversion_hora}'
+    minuto_ = f'0{conversion_minuto}' if conversion_minuto <= 9 else f'{conversion_minuto}'
+    
+    with open(hour_file, 'w') as h:
+        h.flush()
+        h.write(hora_)
+    h.close()
+    
+    with open(min_file, 'w') as m:
+        m.flush()
+        m.write(minuto_)
+    m.close()
+    
     tiempoRetrasado = True
     minutos_a_segundos = 60
 

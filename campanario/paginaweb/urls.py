@@ -34,6 +34,10 @@ urlpatterns = [
     path('songremove/', views.deleteSong, name='deleteSong'),
     path('songrecover/', views.recoverSong, name='recoverSong'),
     path('changehour/', views.change_hour, name='change_hour'),
+    path('setlightstate/', views.set_lights_state, name='setlightstate'),
+    
+    
+    # change_lights_state
 
     
     ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

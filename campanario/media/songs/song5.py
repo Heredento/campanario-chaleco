@@ -2,8 +2,6 @@ import time as t
 from utilities.appfunctions import play, C, D, E, F, G, A, B, C_, utilidad, finalizar
 import utilities.appfunctions as appfunctions
 appfunctions.tempo = 120
-
-appfunctions.tempo = 120
 title="Seppette of the Dead Princess - ZUN"
 
 

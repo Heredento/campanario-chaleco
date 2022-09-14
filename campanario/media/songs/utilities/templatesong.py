@@ -15,6 +15,7 @@ def appsong():
         ### Ingresa las notas a reproducir después de este comentario
 
         ## Las siguientes cuatro líneas son ejemplos
+        
         play(1, 3, C, G, A)
         play(1, 4, D)
         play(1, 4, F)
@@ -33,3 +34,5 @@ def appsong():
         finalizar(t.time(), start_time)
 
     
+if __name__ == '__main__':
+    appsong()

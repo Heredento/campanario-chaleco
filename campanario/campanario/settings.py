@@ -21,10 +21,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 from db import dbservice
 from secretkey import djangokey
 
+def get_ip():
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        ip = s.connect(("8.8.8.8", 80))
+        return s.getsockname()[0]
+    except Exception:
+        return '127.0.0.1'
 
-s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-ip = s.connect(("8.8.8.8", 80))
-ip = s.getsockname()[0]
 ## Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -32,18 +36,11 @@ ip = s.getsockname()[0]
 SECRET_KEY = djangokey.key 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    '192.168.0.13',
-    '192.168.0.14',
-    '192.168.0.15',
-    '192.168.0.16',
-    '192.168.0.17',
-    '192.168.0.18',
-    '192.168.0.19',
-    '192.168.137.91',
-    ip,
+    'localhost',
+    get_ip(),
 ]
 
 

@@ -118,7 +118,7 @@ while server_state()[0][0]:
                         5 >= Now.segundo and music_state()[0][0] is False]
             
             if all(validation): ## Si se cumplen los requisitos
-                print(f"[ID: {ids}] Iniciando todos los días...")     
+                print(f"[ID: {ids}] Iniciando lunes a viernes...")     
                 update_music_state(True)            
                 getsong(songid, )
                 update_music_state(False)
@@ -143,7 +143,7 @@ while server_state()[0][0]:
                 5 >= Now.segundo and music_state()[0][0] is False
             ]
             if all(validation): 
-                print(f"[ID: {ids}] Iniciando todos los días...") 
+                print(f"[ID: {ids}] Iniciando sabado a domingo...") 
                 update_music_state(True)
                 getsong(songid, )
                 update_music_state(False)
