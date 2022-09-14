@@ -82,12 +82,12 @@ def webpage_local():
     ip = s.connect(("8.8.8.8", 80))
     ip = s.getsockname()[0]
     serverpath = os.path.join(os.getcwd(), 'campanario/', 'manage.py')
-    os.system(f'python3 {serverpath} runserver {ip}:8080')
+    os.system(f'python3 {serverpath} runserver {ip}:8080 --insecure')
 
 
 def webpage_localmachine():
     serverpath = os.path.join(os.getcwd(), 'campanario/', 'manage.py')
-    os.system(f'python3 {serverpath} runserver 127.0.0.1:8080')
+    os.system(f'python3 {serverpath} runserver 127.0.0.1:8080 --insecure')
 
 
 def lcdscreens():
@@ -155,7 +155,7 @@ def provisional_connection(connection_function, runserver_local, runserver_local
                     os.system('pkill -f runserver')
                     runserver_localhost()
                     
-                    print(f"Corriendo en 127.0.0.1:8080")
+                    print(f"Corriendo en 127.0.0.1:8080 ")
                     
                 elif server_running == True:
                     while True:
