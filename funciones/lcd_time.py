@@ -96,15 +96,10 @@ while True:
             except Exception:
                 lcd_found = False
                 
-
-   
-        
-        
         if saved_time != timetext:
                 saved_time = timetext
                 print(f"Hora guardada: {timetext} ")
         
-
         if ssdfound is True:
             with canvas(device, dither=True) as draw:
                 customfont = os.path.join(static, 'VerminVibes1989.ttf')

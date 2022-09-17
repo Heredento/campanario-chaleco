@@ -1,4 +1,4 @@
-import os, sys, datetime, RPi.GPIO as GPIO
+import os, sys, datetime, RPi.GPIO as GPIO, psutil
 from datetime import date, datetime
 from time import sleep
 sys.path.append(os.getcwd())
@@ -62,23 +62,18 @@ def guardar_tiempo(hora:int, minuto:int):
     
 
 
-def revisar_tiempo():
-    with open(hour_file, 'r') as h:
-        h.flush()
-        hora = int(h.read())
-    h.close()
+def last_reboot():
+    last_shutoff=datetime.fromtimestamp(psutil.boot_time())
     
-    with open(min_file, 'r') as m:
-        m.flush()
-        minuto = int(m.read())
-    m.close()
-    hora_ = f'0{hora}' if hora <= 9 else f'{hora}'
-    minuto_ = f'0{minuto}' if minuto <= 9 else f'{minuto}' 
+    hora_ = f'0{last_shutoff.hour}' if last_shutoff.hour <= 9 else f'{last_shutoff.hour}'
+    minuto_ = f'0{last_shutoff.minute}' if last_shutoff.minute <= 9 else f'{last_shutoff.minute}' 
     
     return hora_, minuto_
-   
+
 update_clock_state(False)
-check_time = revisar_tiempo()
+
+check_time = last_reboot()
+    
 if f'{check_time[0]}{check_time[1]}' != f"{Now.hour}{Now.minute}":
     
     h_cambiar, m_cambiar = int(check_time[0]), int(check_time[1])

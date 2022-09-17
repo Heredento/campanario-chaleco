@@ -4,22 +4,22 @@ function seventos() { // nombre funcion
     var div = $("#eventosid"); //id del contenido
     switch (value){
         case "1":
-            div.html('<input type="time" name="time" required>');
+            div.html('<input class="set-time" type="time" name="time" required>');
             break;
         case "2":
-            div.html('<input type="time" name="time" required>');
+            div.html('<input class="set-time" type="time" name="time" required>');
             break;
 
         case "3":
-            div.html('<input type="time" name="time" required>');
+            div.html('<input class="set-time" type="time" name="time" required>');
             break;
 
         case "4":
-            div.html('<input type="datetime-local" name="time" required>');
+            div.html('<input class="set-time" type="datetime-local" name="time" required>');
             break;
 
         case "5":
-            div.html('<input type="week" name="week" required> <input type="time" name="time" required>'
+            div.html('<input type="week" class="set-time" name="week" required> <input type="time" class="set-time" name="time" required>'
             );
             break;
     }

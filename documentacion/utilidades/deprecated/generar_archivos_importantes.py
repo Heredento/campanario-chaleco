@@ -1,3 +1,4 @@
+from ctypes import string_at
 import os, sys, os.path, ipaddress, re, time as t
 root = os.path.join(os.path.expanduser('~'), '.campanario')
 dbfileservice= os.path.join(root, 'db.py')
@@ -17,6 +18,10 @@ pyversion3=int(getversion[0])
 pyversion_10=int(getversion[1])
 pytrue=True
 gitisinstalled=False
+
+def read_delayed(mensaje:str):
+    print(mensaje)
+    t.sleep(1/15)
 
 def validateip(address):
     try:
@@ -43,33 +48,33 @@ except Exception:
 
 while(pyversion_10):
     if (pyversion3 >= 3 and pyversion_10 >= 10) and (gitisinstalled is True):
-        print("¡Requisitos superados! 🙌\n")
+        read_delayed("¡Requisitos superados! 🙌\n")
         pyversion_10=False
     else:
-        print("Parece que no cumples los siguientes requisitos:")
+        read_delayed("Parece que no cumples los siguientes requisitos:")
         if gitisinstalled == False:
-            print("Se requiere que esté git instalado...")
-            print("Se puede instalar desde https://git-scm.com/downloads")
+            read_delayed("Se requiere git instalado...")
+            read_delayed("Puede instalarlo desde https://git-scm.com/downloads")
         if pyversion3 >= 3 and 10 >= pyversion_10:
-            print("Se requiere una versión de python más reciente...")
-            print("La versión de python debe ser mayor o igual a 3.10")
-            print("Puedes descargar la última versión desde https://www.python.org/downloads/")
+            read_delayed("Se requiere una versión de python más reciente...")
+            read_delayed("La versión de python debe ser mayor o igual a 3.10")
+            read_delayed("Puedes descargar la última versión desde https://www.python.org/downloads/")
         sys.exit()
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def readhelper():
-    t.sleep(1/15)
+
+
 
 def creacionDBFiles(): 
     try:
-        print("\n> CONFIGURACIÓN DE BASE DE DATOS DEL CAMPANARIO <"), readhelper()
-        print("En este momento vamos a declarar información que se usará en adelante para el campanario."), readhelper()
-        print("Presiona CTRL + C para pasar a la creación de correos."), readhelper()
-        print("Vuelve a presionar CTRL + C para CANCELAR."), readhelper()
-        print("Cuando '(default)' sea mencionado significa que lo puedes dejar en blanco y tomará el mencionado"), readhelper()
-        print("ESTA INFORMACIÓN ES IMPORTANTE, POR FAVOR GUARDALA\n")
+        read_delayed("\n> CONFIGURACIÓN DE BASE DE DATOS DEL CAMPANARIO <")
+        read_delayed("En este momento vamos a declarar información que se usará en adelante para el campanario.")
+        read_delayed("Presiona CTRL + C para pasar a la creación de correos.")
+        read_delayed("Vuelve a presionar CTRL + C para CANCELAR.")
+        read_delayed("Cuando '(default)' sea mencionado significa que lo puedes dejar en blanco y tomará el mencionado")
+        read_delayed("ESTA INFORMACIÓN ES IMPORTANTE, POR FAVOR GUARDALA\n")
         
         def InputArchivos():
             name = input("Escribe el nombre de la base de datos: ")
@@ -125,7 +130,7 @@ def creacionDBFiles():
                 else:
                     port=input("Ingresa un puerto válido (default: 5432): ")
             
-            print("La información es la siguiente: "), readhelper()
+            read_delayed("La información es la siguiente: ")
             dbservice= (f'''
 class dbservice:
     name ='{name}'
@@ -134,7 +139,7 @@ class dbservice:
     host =  '{host}'
     port = '{port}'
                 ''')
-            print(dbservice)
+            read_delayed(dbservice)
             
             return name, user, password, host, port
         
@@ -145,16 +150,16 @@ class dbservice:
         while(confirm):
             confirmation = input("¿Es correcto?(y/n) ")
             if confirmation=='y':
-                print(f"El archivo y sus dependencias se crearán en {root}"), readhelper()
-                print("Dependencias:"), readhelper()
-                print(f"> {dbfileservice}"), readhelper()
-                print(f"> {connection}")
+                read_delayed(f"El archivo y sus dependencias se crearán en {root}")
+                read_delayed("Dependencias:")
+                read_delayed(f"> {dbfileservice}")
+                read_delayed(f"> {connection}")
                 confirm=False
             elif confirmation=='n':
                 inputs = InputArchivos()
 
             else:
-                print("Ingresaste algo equivocado...\n")
+                read_delayed("Ingresaste algo equivocado...\n")
                 inputs = InputArchivos()
         
         
@@ -198,33 +203,33 @@ try:
         )
     cur = connection.cursor()    
 except Exception as ex:
-    print(ex)
+    read_delayed(ex)
         '''
 
         with open(f'{connection}', 'w') as con:
             for line in conection:
                 con.write(line)
         
-        print("Configuración para la base de datos creada exitosamente!")
+        read_delayed("Configuración para la base de datos creada exitosamente!")
         
         
     except KeyboardInterrupt:
-        print("Cambiando al panel del correo...")
+        read_delayed("Cambiando al panel del correo...")
         exists = [rootvalidation or dbexists or emailconexists or conexists]
         for exist in exists:
             if (exist is True):
-                print(f"Ya existe un directorio o archivo en: {exist}")
+                read_delayed(f"Ya existe un directorio o archivo en: {exist}")
 
     except ValueError as ve:
-        print(f"ValueError: {ve}")
+        read_delayed(f"ValueError: {ve}")
 
 
 def creacionEmailFiles():
     try: 
-        print("\n> CREACIÓN DE SISTEMA DE ENVÍO DE CORREOS (NO-REPLY) <"), readhelper()
-        print("Antes de empezar a ingresar la información, asegurate que la contraseña sea de aplicación."), readhelper()
-        print("Porfavor usar una cuenta de google. Puedes abrir el siguiente enlace donde explica como obtenerla"), readhelper()
-        print("Placeholder: https://myaccount.google.com/apppasswords"), readhelper()
+        read_delayed("\n> CREACIÓN DE SISTEMA DE ENVÍO DE CORREOS (NO-REPLY) <")
+        read_delayed("Antes de empezar a ingresar la información, asegurate que la contraseña sea de aplicación.")
+        read_delayed("Porfavor usar una cuenta de google. Puedes abrir el siguiente enlace donde explica como obtenerla")
+        read_delayed("Placeholder: https://myaccount.google.com/apppasswords")
         
         def inputCorreo():
             sendertrue=True
@@ -250,7 +255,7 @@ def creacionEmailFiles():
                     receiver = input("Ingresa un correo VÁLIDO que recibirá los códigos: ")
 
                         
-            print("La información es la siguiente: ")
+            read_delayed("La información es la siguiente: ")
                 
             emailservicefile=f'''
 class emailservice:
@@ -258,7 +263,7 @@ class emailservice:
     password='{password}'
     receiver='{receiver}'
             '''     
-            print(emailservicefile)
+            read_delayed(emailservicefile)
             return sender, password, receiver 
 
         
@@ -273,7 +278,7 @@ class emailservice:
                 emailserv=inputCorreo()
                 pass
             else:
-                print("Ingresa un comando válido.")
+                read_delayed("Ingresa un comando válido.")
                 confirm=input("¿Es correcto?(y/n)")
             
         email=emailserv[0]
@@ -297,49 +302,49 @@ class emailservice:
             for line in emailservicefile:
                 emailfile.write(line)
             
-        print("Creación de sistema envío de correo creado exitosamente.")
+        read_delayed("Creación de sistema envío de correo creado exitosamente.")
     except KeyboardInterrupt:
-        print("Saliendo...")
+        read_delayed("Saliendo...")
 
             
 ### MAIN
 try:
     if (rootvalidation == True) and (dbexists or emailconexists or conexists == True):
-        print("Parece que ya tienes archivos creados para la conexión.")
-        print("Archivos encontrados en: ")
+        read_delayed("Parece que ya tienes archivos creados para la conexión.")
+        read_delayed("Archivos encontrados en: ")
         if dbexists is True:
-            print(f'> {dbfileservice}')
+            read_delayed(f'> {dbfileservice}')
         if emailconexists is True:
-            print(f'> {emailcon}')
+            read_delayed(f'> {emailcon}')
         if conexists is True:
-            print(f'> {connection}')
+            read_delayed(f'> {connection}')
 
         selectiontrue=True
         while selectiontrue:    
-            print("Escribe 1 si deseas revisar los contenidos o 2 si deseas reescribir y/o crear sus contenidos")
+            read_delayed("Escribe 1 si deseas revisar los contenidos o 2 si deseas reescribir y/o crear sus contenidos")
             existselection=input('Tu selección: ')
             if existselection == '1':
                 if dbexists is True:
-                    print(f"Archivo encontrado en: {dbfileservice}"), readhelper()
+                    read_delayed(f"Archivo encontrado en: {dbfileservice}")
                     with open(dbfileservice, "r") as file1:
-                        print(file1.read())
+                        read_delayed(file1.read())
 
                 elif dbexists is False:
-                    print(f"El archivo {dbfileservice} no existe"), readhelper()
+                    read_delayed(f"El archivo {dbfileservice} no existe")
                 
                 if emailconexists is True:
-                    print(f"Archivo encontrado en: {emailcon}"), readhelper()
+                    read_delayed(f"Archivo encontrado en: {emailcon}")
                     with open(emailcon, "r") as file2:
-                        print(file2.read())
+                        read_delayed(file2.read())
                 elif emailconexists is False:
-                    print(f"Archivo {emailcon} no existe"), readhelper()
+                    read_delayed(f"Archivo {emailcon} no existe")
                 
                 if conexists is True:
-                    print(f"Archivo encontrado en: {connection}"), readhelper()
+                    read_delayed(f"Archivo encontrado en: {connection}")
                     with open(connection, "r") as file3:
-                        print(file3.read())
+                        read_delayed(file3.read())
                 elif conexists is False:
-                    print(f"El archivo {connection} no existe")
+                    read_delayed(f"El archivo {connection} no existe")
 
             elif existselection == '2':
                 creacionDBFiles()
@@ -347,25 +352,25 @@ try:
                 selectiontrue=False
             
             else:
-                print("Selección invalida, vuelve a ingresarla.")
+                read_delayed("Selección invalida, vuelve a ingresarla.")
                 existselection=input('Tu selección: ')
             
                 
     elif rootvalidation is True and (dbexists or emailconexists or conexists is False):
         start=True
         while start:
-            print('Parece que el directorio existe, pero no tiene contenidos.')
-            print('Escriba 1 si desea crearlos o escriba 2 si desea salir')
+            read_delayed('Parece que el directorio existe, pero no tiene contenidos.')
+            read_delayed('Escriba 1 si desea crearlos o escriba 2 si desea salir')
             createfiles = input('Su selección: ')
             if createfiles == '1':
                 creacionDBFiles()
                 creacionEmailFiles()
                 start=False
             elif createfiles == '2':
-                print("Saliendo.....")
+                read_delayed("Saliendo.....")
                 sys.exit()
             else:
-                print("Comando desconocido, por favor escriba denuevo su selección.")
+                read_delayed("Comando desconocido, por favor escriba denuevo su selección.")
                 createfiles = input('Su selección: ')
                 
                 
@@ -379,5 +384,5 @@ try:
         creacionDBFiles()
         creacionEmailFiles()
 except KeyboardInterrupt:
-    print("Saliendo...")
+    read_delayed("Saliendo...")
     

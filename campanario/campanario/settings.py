@@ -25,7 +25,8 @@ def get_ip():
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         ip = s.connect(("8.8.8.8", 80))
-        return s.getsockname()[0]
+        ip = s.getsockname()[0]
+        return ip
     except Exception:
         return '127.0.0.1'
 
@@ -54,7 +55,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'paginaweb',
-    'funciones',
     'django_extensions',
 ]
 
