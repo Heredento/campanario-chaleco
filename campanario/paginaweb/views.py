@@ -11,7 +11,7 @@ from .apps import handleFile, saveFile, sendAuthEmail, generateCode, getNowDate
 from .apps import recoverFileSong, listEvents, saveFileBackup, deleteFile
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect, request
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.contrib.auth.decorators import login_required  
 
@@ -368,27 +368,30 @@ def deleteEvent(request):
 
 def change_hour(request):
     if request.method == 'POST':
-        time=request.POST.get('relojhora', False)
-        if time == "":
-            return redirect("/config/")
-        
-        hora, minuto = int(time[:-3]), int(time[3:])
-        print(f'{time},{hora}:{minuto} ')
         active = models.ClockInformation.objects.filter(name='change_hour')
-        
-        clock_change_state = active[0] 
-        today = datetime.now(pytz.timezone('Etc/GMT+6'))
-        fix_hour = threading.Thread(
-            target=input_time, 
-            name=f"FixClockTime{today}", 
-            args=(clock_change_state, hora, minuto))
-        fix_hour.start()
-
-        
+        print(active[0].is_active)
+        if active[0].is_active is False:
+            time=request.POST.get('relojhora', False)
+            if time == "":
+                return redirect("/config/")
             
-        return redirect("/config/")
-    else:
-        return redirect("/config/")
+            hora, minuto = int(time[:-3]), int(time[3:])
+            print(f'{time},{hora}:{minuto} ')
+            active = models.ClockInformation.objects.filter(name='change_hour')
+            
+            clock_change_state = active[0] 
+            today = datetime.now(pytz.timezone('Etc/GMT+6'))
+            fix_hour = threading.Thread(
+                target=input_time, 
+                name=f"FixClockTime{today}", 
+                args=(clock_change_state, hora, minuto))
+            fix_hour.start()
+
+
+            return redirect("/config/")
+        elif active[0].is_active is True:
+            return HttpResponseRedirect("https://youtu.be/dQw4w9WgXcQ/")
+        
 
 def uploadFile(request):
     if request.method=='POST':
@@ -487,5 +490,4 @@ clean_expired_events = Thread(target=delete_expired_events,
 
 state = models.ClockInformation.objects.get(name='server_active')
 if state.is_active is True:
-    pass
-    # clean_expired_events.start()
+    clean_expired_events.start()

@@ -1,3 +1,11 @@
+p.n{
+    margin: 1;
+    font-size: smaller;
+}
+
+h4{
+    margin-bottom: 5pt;
+}
 div.listeventos {
     display: flex;
     flex-direction: column;
@@ -15,7 +23,6 @@ div.listeventos {
 }
 
 .light-item{
-    height: fit-content;
     margin-left: 5px;
     margin-right: 5px;
     background-color: darkorange;
@@ -29,3 +36,131 @@ div.listeventos {
 .no-margin{
     margin: 0;
 }
+
+.set-time{
+    border-radius: 6pt;
+    background: white;
+    border-style:none;
+}
+
+.save-time{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    height: 50px;
+}
+
+input[type=submit].save-input{
+    border-radius: 10px;
+    background: white;
+    border-color: burlywood;
+}
+
+
+input[type=submit].save-input:hover{
+    border-radius: 10px;
+    color: white;
+    background: rgb(136, 136, 136);
+    /* background-color: rgb(59, 59, 59); */
+    border-color:cadetblue;
+}
+.config{
+    margin: 0;
+}
+
+.backup-title-item{
+    width: 50%;
+    align-items: center;
+    background: white;
+    color: black;
+}
+
+.creation-item{
+    width: 40%;
+    background: whitesmoke;
+    color: black;
+    /* font-style; */
+
+}
+.delete-item{
+    width: 10%;
+    
+}
+.item{
+    border-radius: 10px;
+    margin-left: 2pt;
+    margin-right: 2pt;
+    padding: 5pt;
+}
+.delete-song{
+    width: 5%;
+}
+.title-song{
+    width: 95%;
+    background: white;
+    color: black;
+    align-items: center;
+}
+
+[type=submit].delete-button{
+    border-radius: 10px;
+    border-color: white;
+    background:white;
+}
+
+
+[type=submit].delete-button:hover{
+    border-radius: 10px;
+    border-color: crimson ;
+    background:  crimson ;
+}
+
+[type=submit].backup-button{
+    border-radius: 10px;
+    border-color: white;
+    background:white;
+}
+
+
+[type=submit].backup-button:hover{
+    border-radius: 10px;
+    border-color:limegreen ;
+    background:  limegreen ;
+}
+
+
+.till{
+    height: 20pt;
+    width: 20pt;
+}
+
+input[type=submit],
+button[type=submit],
+input[type=button],
+input[type=file].save-ligths{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 5px;
+    border: none;
+    background: rgb(250, 150, 0);
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+}
+
+
+.save-ligths:hover{
+    background: rgb(112, 67, 0);
+}
+
+.links{
+    color:blue;
+}
+
+.links:hover {
+    color:black;
+  }

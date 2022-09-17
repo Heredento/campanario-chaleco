@@ -237,3 +237,9 @@ hr.margin{
     border-radius: 10px;
     color: white;
 }
+
+.set-time{
+    border-radius: 6pt;
+    background: white;
+    border-style:none;
+}

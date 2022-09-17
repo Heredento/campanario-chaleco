@@ -60,8 +60,7 @@ from getapps import now, singleday, singleweek, singleweekdays, singleweekendays
 backupspath = os.path.join(media, 'backups/')
 sys.path.append(songspath)
 
-
-
+import requests
 
 def check_connection():
     try:
@@ -82,12 +81,12 @@ def webpage_local():
     ip = s.connect(("8.8.8.8", 80))
     ip = s.getsockname()[0]
     serverpath = os.path.join(os.getcwd(), 'campanario/', 'manage.py')
-    os.system(f'python3 {serverpath} runserver {ip}:8080')
+    os.system(f'python3 {serverpath} runserver {ip}:8080 --insecure')
 
 
 def webpage_localmachine():
     serverpath = os.path.join(os.getcwd(), 'campanario/', 'manage.py')
-    os.system(f'python3 {serverpath} runserver 127.0.0.1:8080')
+    os.system(f'python3 {serverpath} runserver 127.0.0.1:8080 --insecure')
 
 
 def lcdscreens():
@@ -146,8 +145,6 @@ def provisional_connection(connection_function, runserver_local, runserver_local
                             server_running = False
                             break
                     
-
-            # elif connection_function() is False:
             elif (connected_state is False):
                 print(server_running)
                 if server_running is False:
@@ -155,7 +152,7 @@ def provisional_connection(connection_function, runserver_local, runserver_local
                     os.system('pkill -f runserver')
                     runserver_localhost()
                     
-                    print(f"Corriendo en 127.0.0.1:8080")
+                    print(f"Corriendo en 127.0.0.1:8080 ")
                     
                 elif server_running == True:
                     while True:
@@ -207,27 +204,16 @@ class ProvisionalServer:
         connection_fix.start()
 
 try: 
-    ## Estados de condición
     update_server_state(True)
     update_clock_state(False)
-    # update_clock_state(False)
-
     time.sleep(1)
-
     ProvisionalServer.run()
     Server.ScreenLCD.run()
     Server.Events.run()
     Server.clockTime.run()
     Server.lightState.run()
 
-except KeyboardInterrupt:
-    print("Interrupción de teclado")
-    update_server_state(False)
-    GPIO.cleanup()
-    os.system('pkill -f runserver')
-
 except Exception as ex:
-    print(ex)
-    update_server_state(False)
     GPIO.cleanup()
-    os.system('pkill -f runserver')
+    update_server_state(False)
+

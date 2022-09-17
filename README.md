@@ -1,107 +1,73 @@
-# Campanario chaleco
+# CAMPANARIO CHALECO
 
-### El objetivo principal:
- Desarrollar un sistema que permita automatizar el sistema horario del reloj cuando sucedan incovenientes que vuelven los cambios de horas inevitables; El reloj se retrasa o adelanta tiempo y deseamos que vuelva a la hora normal sin tener que hacerlo manualmente.
-
-### El objetivo secundario 
-es desarrollar una página web que permita agendar eventos y seleccionar partituras-scripts reproducibles en el campanario.
-
-#### Metas:
-
-> Reproducir melodías personalizadas en el campanario en horas agendadas.
-> Desarrollar un control manual mediante la página web sin necesidad de tocar el hardware.
-> Crear una librería para el desarrollo de partituras implementables al campanario mediante scripts.
+### OBJETIVOS:
+ Restablecer la hora del reloj cuando sucedan cortes de energía.
+- [x] Desarrollar un página web personalizada con las siguientes funciones:
+    1. Crear un sistema que permita implementar canciones mediante scripts programables que utilicen teoría musical. [LEER MÁS](./documentacion/instrucciones/song_creator.md)
+    2. Programar las situaciones para que una canción se puede reproducir a lo largo de todo el año dentro de la página web.
+    3. Programar el tiempo en que las luces de las agujas del reloj se enciendan.
+- [x] Redactar documentación necesaria para la implementación del sistema. 
 
 
+### IMPORTANTE
+
+El sistema se apoya en linux con Raspberry Pi, muchas capacidades está limitadas a sus funciones internas de GPIO, no funcionará de igual forma en una PC que tenga Windows o incluso Linux instalado. Sólo para Raspberry Pi 3B+ o mayor.
+
+<hr>
+
+### [1. Configuración de archivos dependentes importantes](./documentacion/instrucciones/setup_dependencies.md)
 
 
-## Postgres database setup
+### [2. Sistema de creación de canciones](./documentacion/instrucciones/song_creator.md)
 
-#### 1. Creación del directorio
-
-En tu dirección `base (root)`, crea un directorio oculto llamado `.campanario`
-
-Si estás en windows la dirección debería ser la siguiente:
-
-    C:\Users\Usuario\.campanario
-
-Usualmente en windows, las carpetas iniciando con un `.` se ocultan, por lo tanto se debería habilitar la opción de mostrar carpetas ocultas.
-
-Si estás en linux la dirección debería ser:
-
-    /home/usuario/.campanario
-
-Las carpetas ocultas también deberían estar actividas en caso que quiera acceder a ellas.
-
-#### 2. Creación del conector
-
-Dentro del directorio, crea un archivo llamado db.py
-
-Su contenido debería ser el siguiente:
-
-`db.py at:`
-
-> (linux) /home/usuario/.campanario/db.py
-
-> (windows) C:\Users\Usuario\\.campanario\\.campanario\\db.py
-<pre><code>class dbservice:
-    name = 'nombre'
-    user = 'usuario'
-    password = 'contraseña'
-    host =  'direccion'
-    port = 'puerto'
-</code></pre>
-
-*El contenido cerrado entre comillas `''` será el contenido que le corresponda a la base de datos que desee conectar.*
-
-La base de datos ya debería estar creada para ese momento. Esto es sólo para conectarse a ella.
-Engine: PostgreSQL 
-
-Una vez realizado esto, la conexión a la base de datos no debería estar expuesta.
+### [3. Resumen de la estructura](./documentacion/estructura-documentacion.md)
 
 
+<hr>
 
+## Configurar el sistema y la página web en una nueva Raspberry Pi
+- Instalar Raspberry OS en la Raspberry [Tutorial práctico](https://youtu.be/cSx-5YJnFRI) 
+- En la terminal recomendamos escribir los siguientes comandos:
+<code><pre>sudo apt update; sudo apt upgrade;</code></pre>
+- Haber instalado una version de python mayor o igual a 3.10.
 
+    Para instalar python recomendamos seguir las siguientes instrucciones:
 
-#### 3. Creación del servicio de correo
-
-`emailcon.py at:`
-
-> (linux) /home/usuario/.campanario/emailcon.py
-
-> (windows) C:\Users\Usuario\\.campanario\\.campanario\\emailcon.py
-<pre><code>class emailservice:
-    email='correoqueenvia@dominio'
-    password='contraseñatipoapps'
-    receiver='correoqueseenviaranloscodigos'
-</code></pre>
-
-*El contenido cerrado entre comillas `''` será el contenido que le corresponda a la base de datos que desee conectar.*
-
-
-#### 4. Creación de las conexiones a base de datos
-
-`connection.py at:`
-
-> (linux) /home/usuario/.campanario/connection.py
-
-> (windows) C:\Users\Usuario\\.campanario\\.campanario\\connection.py
-<pre><code>import psycopg2 
-from db import dbservice
-
-try:
-    connection=psycopg2.connect(
-        host=dbservice.host,
-        user=dbservice.user,
-        password=dbservice.password,
-        database=dbservice.name
-    )
-
-
-    cur = connection.cursor()
-    print("Conexión exitosa!")
-
+    Descargar el instalador comprimido en la página oficial de python.  [LEER MÁS](https://www.python.org/downloads/source/)
     
-except Exception as ex:
-    print(ex)</code></pre>
-*El contenido cerrado entre comillas `''` será el contenido que le corresponda a la base de datos que desee conectar.*
+    1. Documentación para instalar python en Linux. [LEER MÁS](https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-programming-environment-on-ubuntu-20-04-quickstart-es)
+
+
+Una vez instalado todo, clonaremos el código de la página web y lo pondremos donde queramos. Puedes usar el siguiente comando:
+<code><pre>wget https://github.com/Heredento/campanario-chaleco.git</code></pre>
+
+Esto descargará todos los archivos en el *directorio actual* que te encuentres, utiliza `cd campanario_chaleco` para entrar al directorio desde la terminal.
+
+Crearemos un entorno virtual que se usará para instalar las dependencias (asegurate que la Raspberry esté conectada a internet) escribiendo el siguiente código:
+<pre>python3 -m env venv</pre>
+Esto se tardará un poco. 
+Después escribiremos:
+<pre>source env/bin/activate</pre>
+Eso hará que en tu terminal, al principio aparezca **(env)**
+
+Ahora escribe el siguiente comando:
+<pre>pip install -r requirements.txt</pre>
+Esto instalará los paquetes necesarios para que tu no los instales manualmente uno por uno.
+
+Escribe `pwd` y retornarnará cómo algo cómo el mensaje siguiente: `home/usuario/el/directorio/que/elegiste`, copia ese resultado, guardalo y escribe `cd`, luego volveras a tu *directorio root*, ahora escribe <pre>touch start_server.sh</pre>esto creará un archivo **bash** que se usará para empezar el server cada vez que se reinicie.
+
+Ese archivo lo editaras con el siguiente contenido y el mensaje que copiaste anteriormente.
+<code><pre>
+cd /home/campanario/campanario/campanario_chaleco
+source env/bin/activate
+python3 server_run.py
+</pre></code>
+Una vez guardado el archivo, escribe `pwd`, esto te retornará `/home/usuario` el cual le agregaremos 
+`@reboot bash` y `start_server.sh` al final el cual debería verse como:
+<pre>@reboot bash /home/usuario/start_server.sh</pre>
+Copiamos ese código, y escribimos `crontab -e`, posiblemente te pregunte si quieres usar un editor cómo vi, emacs, nano. Tú elige nano, usualmente escribiendo 1 y presionado ENTER. 
+
+Ahora estas ubicado dentro del archivo crontab el cual usa las fechas de los lados del teclado y ve hasta abajo justo una línea antes del texto `exit 0`, ahora, pegamos el código pegado (usualmente presionando CTRL+SHIFT+V) `@reboot bash /home/usuario/start_server.sh` y lo guardamos presionando CTRL+S, ahora presionamos CTLR+Q y eso haría que te salgas del interfaz.
+
+Una vez realizado esto, la Raspberry está lista para funcionar. La puede reiniciar, e incluso desconectar y volver a conectar.
+

@@ -13,139 +13,151 @@
 
 
 {% include 'extends/extends_navbar.html' %}
-
 {% block body %}
 <body background="{% static 'eventos/img/bg_events.gif' %}" >
 <br><br>
-    <div class="main-block midtransparent">
-        <h3>Programar encendido de agujas</h3>    
-        <form action="{% url 'setlightstate' %}" method="post">
-            {% csrf_token %}
-            
-            <label for="startid">Inicio: </label>
-            <input type="time" min="00:00:00"  name ="start" id="startid" required>
-            <label for="finishid">Fin: </label>
-            
-            <input type="time" name ="finish" id="finishid" required>
-            <br><br>
-            <input type="submit" value="Guardar">
-            <script>
-                var start_time = document.getElementById("startid").max;
-                document.getElementById("finishid").max = start_time;
-
-            </script>
-        </form>
-        <div class="normalbg">
-            <h5 class="no-margin">Tiempo establecido actual</h5>
-            {% for time in sched_lights %}
-                <div class="flex flexcenter">
-                    <div class="light-item"><p>Inicio: {{time.start_time}}</p></div>
-                    <div class="light-item"><p>Fin: {{time.finish_time}}</p></div>
+    <div class="flex flexrow"> 
+        <div class="main-block midtransparent">
+            <h4>Programar encendido de agujas</h4>    
+            <form class="config" action="{% url 'setlightstate' %}" method="post">
+                {% csrf_token %}
+                <div class="flexrow flexcenter">
+                    <div class="flex save-time">
+                        <input class="set-time" type="time" min="00:00:00"  name ="start" id="startid" required>
+                        <img class="till"src="{% static 'eventos/img/flecha-derecha.png' %}" alt="desde -> hasta">
+                        <input class="set-time" type="time" name ="finish" id="finishid" required>
+                    </div>
+                    <div class="flex save-time">
+                        <button class="save-ligths" type="submit">Guardar</button>
+                    </div>
                 </div>
-            <br>
-            {% empty %}
-                <p>No hay nada aquí</p>
-            {% endfor %}
-        </div>
-
-
-        <h3 >Cambiar hora del campanario</h3>
-        <p>Ingresa la hora que aparece en el campanario</p>
-        <p>Nota: No importa si lo ingresas con formato de 24 o 12 horas</p>
-        <form action="{% url 'change_hour'%}" method="post">
+                <script>
+                    var start_time = document.getElementById("startid").max;
+                    document.getElementById("finishid").max = start_time;
+    
+                </script>
+            </form>
+            <div class="flex normalbg flexcolumn" style="height: 80px; align-items: center;">
+                <h4 class="no-margin">Tiempo establecido actual</h4>
+                {% for time in sched_lights %}
+                    <div class="flex flexcenter">
+                        <div class="light-item flex"><p class="n">Inicio: {{time.start_time}}</p></div>
+                        <div class="light-item flex"><p class="n">Fin: {{time.finish_time}}</p></div>
+                    </div>
+    
+                {% empty %}
+                    <p>No hay nada aquí</p>
+                {% endfor %}
+            </div>
+        </div> 
+        <br>
+    <div class="main-block midtransparent">
+        <h4 >Cambiar hora del campanario</h4>
+        <p class="n">Ingresa la hora que aparece en el campanario</p>
+        <p class="n">Formato de 24 o 12 horas es válido</p>
+        <form class="config" action="{% url 'change_hour'%}" method="post">
             {% csrf_token %}
             🕐
-            <input type="time" name="relojhora" required>
+            <input class="set-time" type="time" name="relojhora" required>
             
             {% if timeDisable is True %}
-                <button type="submit" disabled>Cambiar la hora</button>
-                <p>El cambio de hora se encuentra en proceso...</p>
+                <button class="save-ligths" type="submit" disabled>Cambiar la hora</button>
+                <p class="n" style="font-size: medium;">El cambio de hora se encuentra en proceso...</p>
             {% elif timeDisable is False %}
-                <button id="submitbutton" onclick="this.disabled=true,this.form.submit();" type="submit" >
+                <button class="save-ligths" id="submitbutton" onclick="this.disabled=true,this.form.submit();" type="submit" >
                 Cambiar la hora
                 </button>
             {% endif %}
         </form>
 
-        <hr>
 
-        <h3 >Agregar canciones</h3>
-        <p style="font-size: smaller;">Asegurate de saber lo que haces.</p>
-        <p style="font-size: smaller;">El siguiente enlace tiene instrucciones para agregar una cancion.</p>
-        <a style="font-size: smaller;" href="https://github.com/Heredento/campanario-chaleco/blob/main/campanario/media/songs/utilities/templatesong.py">Documentación de github</a>
-        <a href="" style="font-size: smaller;">Documentación interna</a>
-        <form action="{% url 'uploadFile' %}" method="post" enctype="multipart/form-data">
+    </div>
+    </div>
+    
+    
+
+    <br>
+    <div class="main-block midtransparent flex flexcolumn flexcenter" >
+        <h4 >Agregar canciones</h4>
+        <p class="n">Asegurate de saber lo que haces.</p>
+        <p class="n">El siguiente enlace tiene instrucciones para agregar una cancion.</p>
+        <div class="flex flexrow flexcenter">
+            <img src="{% static 'eventos/img/github.png' %}" alt="github" height="50pt" id="documentation">
+            <label for="documentation" >
+                <p class="n">Documentación interna</p>
+                <a class="links" href="https://github.com/Heredento/campanario-chaleco/blob/main/campanario/media/songs/utilities/templatesong.py">
+                    ¿Cómo agregar canciones?</a>
+            </label>    
+        </div>
+        <form class="config" action="{% url 'uploadFile' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %} 
-            <input type="file" enctype="multipart/form-data" name="file" title="sheesh" placeholder="Hola"  id="songfile" accept=".py" > 
-            <button type="submit">Subir Archivo</button>
+            <input type="file" class="save-ligths" enctype="multipart/form-data" name="file" placeholder="Hola"  id="songfile" accept=".py" > 
+            <button type="submit" class="save-ligths">Subir Archivo</button>
         </form>
         {% if fileIsValid is True %}
         {% elif fileIsValid is False %}
-            <p>Ha sucedido un problema</p>
-            <p>El documento que ingresaste no cumple alguno de los requisitos.</p>
+            <p class="n">Ha sucedido un problema...</p>
+            <p class="n">El documento que ingresaste no cumple alguno de los requisitos.</p>
         {% endif %}
         {% if successfulUpload is True %}
-            <p>Canción {{songname}} agregada exitosamente</p>
+            <p class="n">Canción {{songname}} agregada exitosamente</p>
         {% elif successfulUpload is False %}
 
         {% endif%}
-
-        <hr>
-        <h3>Canciones listadas</h3>
+    </div>
+        <br>
+    <div class="main-block midtransparent">
+        <h4>Canciones listadas</h4>
         <p style="font-size: smaller;">Canciones registradas para ser reproducidas en el campanario</p>
         <div class="listeventos">
-            <form action="{% url 'deleteSong' %}" method="post">
+            <form class="config" action="{% url 'deleteSong' %}" method="post">
                 {% csrf_token %}
                 {% for event in events  %}
-                <div class="flex flexrow">
-                    <div class="flex">
-                        <p id="songname">{{ event.title }}</p>
+                <div class="flex flexrow flexcenter" style="align-items:center;" >
+                    <div class="flex title-song item" style="height: 15pt;">
+                        <p class="n" id="songname"> <b>{{ event.title }}</b> </p>
                     </div>
-                    <div class="flex">
-                        <button type="submit" for="songname" name="{{ event.id }}">
-                            <img src="{% static 'eventos/img/trash-white.png' %}" class="trashicon">
+                    <br style="margin-right: 5pt;">
+                    <div class="flex delete-song item flexcenter">
+                        <button class="delete-button" style="height: 25pt;" type="submit" for="songname" name="{{ event.id }}">
+                            <img src="{% static 'eventos/img/delete-icon.png' %}" class="trashicon">
                         </button>
                     </div>
+                    
                 </div>
 
-                
+                <!-- <br> -->
                 {% endfor %}    
             </form>
         </div>
-        <h3>Recuperación de canciones listadas</h3>
-        <p style="font-size: smaller;">Canciones listadas recuperables</p>
-        <div class="listeventos">
-            <form action="{% url 'recoverSong' %}" method="post">
-                {% csrf_token %}
-                {% for backup in backups  %}
-                <div class="flex flexrow">
-                    <div class="flex">
-                        <p id="songname">{{ backup.title }}</p>
+    </div>
+        <br>
+        <div class="main-block midtransparent" >
+            <h4>Recuperación de canciones listadas</h4>
+            <p style="font-size: smaller;">Canciones listadas recuperables</p>
+            <div class="listeventos">
+                <form class="config" action="{% url 'recoverSong' %}" method="post">
+                    {% csrf_token %}
+                    {% for backup in backups  %}
+                    <div class="flex flexrow">
+                        <div class="flex backup-title-item item">
+                            <p class="n" id="songname"><b>{{ backup.title }}</b></p>
+                        </div>
+                        <div class="flex flexcenter creation-item item">
+                            <p class="n" id="songname"><b>{{ backup.creationdate }}</b></p>
+                        </div>
+                        <div class="flex flexcenter delete-item">
+                            <button class="backup-button" style="height: 40pt;" type="submit" for="songname" name="{{ backup.id }}">
+                                <img src="{% static 'eventos/img/recover_icon.png' %}" class="trashicon">
+                            </button>
+                        </div>
                     </div>
-                    <div class="flex">
-                        <p id="songname">Creado el</p>
-                        <p>{{ backup.creationdate }}</p>
-                    </div>
-                    <div class="flex">
-                        <button type="submit" for="songname" name="{{ backup.id }}">
-                            <img src="{% static 'eventos/img/recover_icon.png' %}" class="trashicon">
-                        </button>
-                    </div>
-                </div>
+                    <br>
+                    {% endfor %}    
+                </form>
 
-                
-                {% endfor %}    
-            </form>
-
+            </div>
         </div>
-
-
-    </div> 
-
-
-
-
-
 </body>
 
 </body>

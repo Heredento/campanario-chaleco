@@ -1,6 +1,5 @@
 import os, sys
-db = os.path.join(os.path.expanduser('~'), '.campanario')
-sys.path.append(db)
+sys.path.append(os.path.join(os.path.expanduser('~'), '.campanario'))
 from connection import cur, connection
 
 
