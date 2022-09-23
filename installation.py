@@ -3,12 +3,10 @@ import os, sys
 command='''
 python3 -m venv env;
 . env/bin/activate; 
-pip install -r requirements.txt; 
-'''  
-command_migrations='''
-. env/bin/activate; 
+pip install -r requirements.txt;
 python3 campanario/manage.py makemigrations;
-python3 campanario/manage.py migrate'''
+python3 campanario/manage.py migrate; 
+'''  
 
 sys.path.append(os.path.join(os.path.expanduser('~'), '.campanario'))
 from connection import cur, connection
@@ -21,16 +19,10 @@ try:
 except Exception as ex:
     print("Sucedió un problema con la conexión de la base de datos.")
     print(f"ERROR: {ex}")
-print("\nIniciando proceso de instalación de paquetes...")
+    print("Si es la primera vez instalando ignorar el problema")
+print("\nIniciando proceso de instalación de paquetes y migración...")
 try:
     os.system(command)
 except Exception as ex:
-    print("Sucedió un problema con la instalación de paquetes..")
-    print(f"ERROR: {ex}")
-    
-print("\nIniciando proceso de migraciones para la página web...")
-try:
-    os.system(command_migrations)
-except Exception as ex:
-    print("Sucedió un error al realizar las migraciones...")
+    print("Sucedió un problema con la instalación de paquetes o migración..")
     print(f"ERROR: {ex}")

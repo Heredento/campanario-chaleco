@@ -1,5 +1,5 @@
 import threading, os, sys, time, socket, importlib.util, RPi.GPIO as GPIO, requests
-from datetime import datetime, time as t
+from datetime import date, datetime, time as t
 from campanario.media import songs
 import funciones.drivers as drivers
 db = os.path.join(os.path.expanduser('~'), '.campanario')
@@ -100,6 +100,16 @@ def time_config():
 clock_function = threading.Thread(target=time_config)
 
 def display_lights():
+    # ## check display lights
+    # create_query=f"select start_time, finish_time from paginaweb_ScheduledTasks where name='scheduled_lights';"
+    # cur.execute(create_query)
+    # object_ = cur.fetchall()
+    # print(object_)
+    # start_time, finish_time = datetime()
+    # if len(object_) == 0:
+    #     query_ = f"insert into paginaweb_ScheduledTasks (name, start_time, finish_time) VALUES ('scheduled_lights', None, None)"
+    #     cur.execute(query_)
+    #     cur.commit()
     while True:
         query=f"select start_time, finish_time from paginaweb_ScheduledTasks where name='scheduled_lights';"
         cur.execute(query)
