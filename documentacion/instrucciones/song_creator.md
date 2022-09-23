@@ -1,5 +1,5 @@
 # Aclaraciones
-Para empezar, recomendamos leer el siguiente [pdf](./normas_canciones.pdf) para entender cómo funciona el sistema de canciones.
+Para empezar, recomendamos leer el siguiente [pdf](./normas_canciones_campanario.pdf) para entender cómo funciona el sistema de canciones.
 
 
 ## En resumen
